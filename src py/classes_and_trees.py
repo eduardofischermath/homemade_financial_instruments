@@ -447,7 +447,7 @@ class DiscreteAsset(Asset):
   
 class BinaryTreeAsset(DiscreteAsset):
   r"""
-  Discrete asset whose behavior is described by a binary tree.
+  Discrete asset whose behavior is described by a [complete] binary tree.
   At every step the value of the asset can assume two values (depending on the previous).
   """
   pass
@@ -496,8 +496,17 @@ class EqualUpDownBinaryTreeAsset(BinaryTreeAsset):
     Computes the probability of each possible path the asset might follow.
     Returns list with 2**max_time items, each item a tuple of the possible path
     and its probability"""
-    pass
-    ### WORK HERE ###
+    interest_rate = world.get_interest_rate()
+    # Will need to define trees...
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 ########################################################################
 

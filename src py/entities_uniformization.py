@@ -15,3 +15,8 @@ class Uniformization():
 class InterestRateUniformization():
   pass
 
+  def __init__():
+    pass
+    
+  def get_preferred_form(self):
+    return self.continuous_interest_rate
