@@ -1,6 +1,6 @@
 # This file is for small functions which solve exercises in the book
 #"The Concepts and Practice of Mathematical Finance", 2nd edition, by
-#Mark Joshi
+#Mark Joshi, thereon referred to only as Joshi's book or Joshi's.
 
 from math import exp
 
