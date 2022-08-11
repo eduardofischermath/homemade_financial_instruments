@@ -5,86 +5,86 @@
 # Python
 
 # Byte-compiled / optimized / DLL files
-src py/__pycache__/
-src py/*.py[cod]
-src py/*$py.class
+src py/**/__pycache__/
+src py/**/*.py[cod]
+src py/**/*$py.class
 
 # C extensions
-src py/*.so
+src py/**/*.so
 
 # Distribution / packaging
-src py/.Python
-src py/build/
-src py/develop-eggs/
-src py/dist/
-src py/downloads/
-src py/eggs/
-src py/.eggs/
-src py/lib/
-src py/lib64/
-src py/parts/
-src py/sdist/
-src py/var/
-src py/wheels/
-src py/share/python-wheels/
-src py/*.egg-info/
-src py/.installed.cfg
-src py/*.egg
-src py/MANIFEST
+src py/**/.Python
+src py/**/build/
+src py/**/develop-eggs/
+src py/**/dist/
+src py/**/downloads/
+src py/**/eggs/
+src py/**/.eggs/
+src py/**/lib/
+src py/**/lib64/
+src py/**/parts/
+src py/**/sdist/
+src py/**/var/
+src py/**/wheels/
+src py/**/share/python-wheels/
+src py/**/*.egg-info/
+src py/**/.installed.cfg
+src py/**/*.egg
+src py/**/MANIFEST
 
 ########################################################################
 # C++
 
 # Prerequisites
-src cpp/*.d
+src cpp/**/*.d
 
 # Compiled Object files
-src cpp/*.slo
-src cpp/*.lo
-src cpp/*.o
-src cpp/*.obj
+src cpp/**/*.slo
+src cpp/**/*.lo
+src cpp/**/*.o
+src cpp/**/*.obj
 
 # Precompiled Headers
-src cpp/*.gch
-src cpp/*.pch
+src cpp/**/*.gch
+src cpp/**/*.pch
 
 # Compiled Dynamic libraries
-src cpp/*.so
-src cpp/*.dylib
-src cpp/*.dll
+src cpp/**/*.so
+src cpp/**/*.dylib
+src cpp/**/*.dll
 
 # Fortran module files
-src cpp/*.mod
-src cpp/*.smod
+src cpp/**/*.mod
+src cpp/**/*.smod
 
 # Compiled Static libraries
-src cpp/*.lai
-src cpp/*.la
-src cpp/*.a
-src cpp/*.lib
+src cpp/**/*.lai
+src cpp/**/*.la
+src cpp/**/*.a
+src cpp/**/*.lib
 
 # Executables
-src cpp/*.exe
-src cpp/*.out
-src cpp/*.app
+src cpp/**/*.exe
+src cpp/**/*.out
+src cpp/**/*.app
 
 ########################################################################
 # Common Lisp
 
-src cl/*.FASL
-src cl/*.fasl
-src cl/*.lisp-temp
-src cl/*.dfsl
-src cl/*.pfsl
-src cl/*.d64fsl
-src cl/*.p64fsl
-src cl/*.lx64fsl
-src cl/*.lx32fsl
-src cl/*.dx64fsl
-src cl/*.dx32fsl
-src cl/*.fx64fsl
-src cl/*.fx32fsl
-src cl/*.sx64fsl
-src cl/*.sx32fsl
-src cl/*.wx64fsl
-src cl/*.wx32fsl
+src cl/**/*.FASL
+src cl/**/*.fasl
+src cl/**/*.lisp-temp
+src cl/**/*.dfsl
+src cl/**/*.pfsl
+src cl/**/*.d64fsl
+src cl/**/*.p64fsl
+src cl/**/*.lx64fsl
+src cl/**/*.lx32fsl
+src cl/**/*.dx64fsl
+src cl/**/*.dx32fsl
+src cl/**/*.fx64fsl
+src cl/**/*.fx32fsl
+src cl/**/*.sx64fsl
+src cl/**/*.sx32fsl
+src cl/**/*.wx64fsl
+src cl/**/*.wx32fsl
