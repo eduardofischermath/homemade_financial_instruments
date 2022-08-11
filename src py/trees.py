@@ -2,6 +2,9 @@
 
 ########################################################################
 
+from worlds import *
+from trees import *
+
 class FrozenTree():
   """A tree with frozen node structure (the nodes may be mutable)."""
   pass
@@ -15,7 +18,7 @@ class FrozenBinaryTree():
   def __init__(self, list_of_nodes, root = None, skip_checks = False):
     # Currently assumes list of nodes is correct for a binary tree
     if not skip_checks:
-      if not self.check_consistency_of_list_of_nodes(list_of_nodes)
+      if not self.check_consistency_of_list_of_nodes(list_of_nodes):
         raise ValueError('Given nodes cannot form a binary tree.')
     self.list_of_nodes = list_of_nodes
     # Shortcut for root insertion (currently assumes it is indeed the root)
