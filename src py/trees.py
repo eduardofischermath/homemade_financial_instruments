@@ -1,4 +1,6 @@
-# For varied utilities, currently tree structures
+# For tree structures, focusing on binary (and may complete) trees
+
+########################################################################
 
 class FrozenTree():
   """A tree with frozen node structure (the nodes may be mutable)."""
@@ -40,7 +42,37 @@ class FrozenBinaryTree():
   def get_root(self):
     """Returns root of tree."""
     return self.root
-  
+
+  def propagate_formula_up(self, formula, preparation):
+    r"""
+    Uses a formula to create a value for a dictionary key which
+    will be present in a dictionary in every node of the tree.
+    
+    A formula is given which computes the value of a node based on the
+    values of its left and right children. The formula should also
+    provide a value for the leaves.
+    
+    Also allows a preparation, like for example change all nodes to
+    start off as an empty dictionary prior to commencing the up-propagation
+    of the formula.
+    """
+    pass
+    
+  def propagate_formula_down(self, formula, preparation):
+    r"""
+    Uses a formula to create a value for a dictionary key which
+    will be present in a dictionary in every node of the tree.
+    
+    A formula is given which computes the value of a node based on the
+    values of its parent. The formula should also provide a value for the
+    root.
+    
+    Also allows a preparation, like for example change all nodes to
+    start off as an empty dictionary prior to commencing the down-propagation
+    of the formula.
+    """
+    pass
+
 class FrozenCompleteBinaryTree(FrozenBinaryTree):
   """A FrozenBinaryTree of constant height [distance from leafs to root]."""
 

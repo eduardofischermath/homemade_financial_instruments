@@ -2,9 +2,11 @@
 #"The Concepts and Practice of Mathematical Finance", 2nd edition, by
 #Mark Joshi, thereon referred to only as Joshi's book or Joshi's.
 
+########################################################################
+
 from math import exp
 
-# For problem 6 in chapter 3:
+# For problem 6 in chapter 3: we evaluate the European put option
 # (Note the process prices an European call option instead of the
 #European put option. We do put-call parity at the end.)
 # Time is always 4 months. Variables:
