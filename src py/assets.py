@@ -347,15 +347,8 @@ class EqualUpDownBinaryTreeAsset(BinaryTreeAsset):
     and its probability"""
     interest_rate = world.get_interest_rate()
     # Will need to define trees...
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    ### WORK HERE ###
+    return NotImplementedError('Working on it')
 
 ########################################################################
 

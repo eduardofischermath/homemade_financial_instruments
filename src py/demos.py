@@ -57,9 +57,9 @@ def all_demos():
   """Provides envelope for all demonstration functions."""
   should_keep_going = True
   while should_keep_going:
-    evaluate_vanilla_option_using_binary_tree_demo
+    evaluate_vanilla_option_using_binary_tree_demo()
     should_keep_going = capture_purify_ehxibit_input(
-        message = 'Wish to continue? [Y]es or [N]o.\n',
+        message = 'Wish to continue? [Y]es or [N]o. (Default: No)\n',
         type_to_convert_to = bool,
         pre_conversion_purifying_formula = lambda s: detect_initial(s, 'y'),
         post_conversion_purifying_formula = None,
@@ -68,8 +68,62 @@ def all_demos():
 
 def evaluate_vanilla_option_using_binary_tree_demo():
   """Computes value of vanilla option with user-provided information"""
-  pass
-
+  print('This evaluates a vanilla option on an asset whose progress is\
+      tracked by a binary tree.')
+  # First collect all information
+  list_of_args = []
+  list_of_args.append({
+      'message': 'Which kind of option? [C]all or [P]ut option? (Default: Call)\n',
+      'type_to_convert_to': bool,
+      'pre_conversion_purifying_formula': lambda s: detect_initial(s, 'p')
+      'public_variable_name': 'is_put_instead_of_call',
+      'request_exhibition': True})
+  list_of_args.append({
+      'message': 'Which kind of option? [European] or [A]merican? (Default: European)\n',
+      'type_to_convert_to': bool,
+      'pre_conversion_purifying_formula': lambda s: detect_initial(s, 'a'),
+      'public_variable_name': 'is_american_instead_of_european',
+      'request_exhibition': True})
+  list_of_args.append({
+      'message': 'Enter [annual, continuous] interest rate (as a number). Also known as short rate.\n\
+          (Default: 0.05 which is equivalent to 5%)\n',
+      'type_to_convert_to': float,
+      'pre_conversion_purifying_formula': None,
+      'public_variable_name': 'annual_continuous_interest_rate',
+      'request_exhibition': True})
+  list_of_args.append({
+      'message': 'Enter relevant time unit for step of binary tree: [Y]ear, [M]onth or [D]ay. (Default: Month)\n',
+      'type_to_convert_to': str,
+      'pre_conversion_purifying_formula': lambda s: s[0].lower() if s else 'm',
+      'public_variable_name': 'time_unit_for_step',
+      'request_exhibition': True}))
+  list_of_args.append({
+      'message': 'Enter duration of a single step in previous time unit. (Default: 1)\n',
+      'type_to_convert_to': float,
+      'pre_conversion_purifying_formula': None 
+      'public_variable_name': 'duration_of_single_step',
+      'request_exhibition': True}))  
+  list_of_args.append({
+      'message': 'Enter number of steps in binary tree. (Default: 4)\n',
+      'type_to_convert_to': int,
+      'pre_conversion_purifying_formula': None,
+      'public_variable_name': 'number_of_steps',
+      'request_exhibition': True}))
+  list_of_args.append({
+      'message': 'Enter initial value of base asset. (Default: 100)\n',
+      'type_to_convert_to': float,
+      'pre_conversion_purifying_formula': None,
+      'public_variable_name': 'initial_value',
+      'request_exhibition': True}))
+  list_of_args.append({
+      'message': 'Enter number of steps in binary tree. (Default: 10)\n',
+      'type_to_convert_to': float,
+      'pre_conversion_purifying_formula': None,
+      'public_variable_name': 'number_of_steps',
+      'request_exhibition': True}))  
+  # Call relevant function and print it
+  print('')
+  return None # Imperative
 
 if __name__ == '__main__':
   all_demos()
