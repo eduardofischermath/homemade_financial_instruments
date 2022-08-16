@@ -63,7 +63,4 @@ def solution_03_06(S0 = 100, A = 10, r = 0.05, use_sanity_checks = False):
   if use_sanity_checks:
     print(f'{put_option_present_value=}')
   return put_option_present_value
-  
-if __name__ == '__main__':
-  print(solution_03_06(use_sanity_checks = True))
-    
+
