@@ -7,6 +7,10 @@ At this moment, we prefer to use a ISSUES file.)
 
 Possible values for status: OPEN, COMPLETE, IGNORED, ONGOING.
 
+Issues are uniquely numbered from 0001 through 9999. In case an issue is
+specific to one or some of the programming languages then it might be added
+to the number for quicker identification.
+
 ## ISSUE #0001 ONGOING
 
 Decide versioning/git management/project management structure.
@@ -26,26 +30,26 @@ languages interact.
 
 In Python the code is object-oriented, with abstract (or pseudo-abstract)
 classes for Assets, Worlds and Unifications, plus subclasses, always
-trying to write functionally. There is a demo file, with interactive prompts,
-and unavoidably some is imperative.
+trying to write code in a functional and object-oriented paradigm. There
+is a demo file, with interactive prompts, and unavoidably some is imperative.
 
-## ISSUE #0003 OPEN
+## ISSUE #0003py OPEN
 
 For Python, improve package/subpackage/modules structure and importing
-to avoid any possible circularities and at the same time don't have names
-so long that they hinder development.
+to avoid any possible circularities and at the same time avoid excessively
+long names which might hinder development.
 
-## ISSUE #0004 OPEN
+## ISSUE #0004py OPEN
 
 Add argument default_if_failed_conversion to input capturing/purifying,
 spread it to neighbor functions.
 
-## ISSUE #0005 OPEN
+## ISSUE #0005py OPEN
 
 Implement up-propagation (from leaves to root) and down-propagation
 (from root to leaves) on binary trees.
 
-## ISSUE #0006 OPEN
+## ISSUE #0006py OPEN
 
 Implement formulas for up-propagation  for pricing of vanilla options
 for assets behaving in binary trees via replication method (replication
@@ -62,9 +66,32 @@ and if the put option is American, denoted pa,
 
 pa_p = max(0, K - a_p, (formula above with pa instead of pe))
 
-## ISSUE #0007 OPEN
+## ISSUE #0007py OPEN
 
 Implement formulas for up-propagationand via risk-neutral method
 (assumption of risk-neutral investors give specific probabilities for the
 outcomes and the value of something is "essentially" (need to adjust for
 interest rate) equal to its expected value under those probabilities).
+
+## ISSUE #0008 OPEN
+
+Add to each file a header related to author/e-mail and the license.
+
+## ISSUE #0009py OPEN
+
+Add methods to navigate through nodes among a tree. For example, in a way that takes
+a node and a string such as "plr" and produces the parent node of the given node,
+then takes its left child node and then its right child node.
+
+## ISSUE #0010py OPEN
+
+Write code for pricing put American options in Exercise 6 of Chapter 3 of
+Mark Joshi's book "The Concepts and Practice of Mathematical Finance"
+using the FrozenBinaryTree methods (yet to be coded).
+
+## ISSUE #0011py OPEN
+
+Work on uniformizations (for example, interest rate and dividend rate).
+Also, add function outside classes for transformation into and out of
+percentage (probably better outside classes than a method of a class
+designed specifically for that).
