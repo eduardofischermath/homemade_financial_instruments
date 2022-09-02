@@ -67,8 +67,8 @@ class FrozenBinaryTree():
     will be present in a dictionary in every node of the tree.
     
     A formula is given which computes the value of a node based on the
-    values of its parent. The formula should also provide a value for the
-    root.
+    values of its parent (and whether it is the left or right child node).
+    The formula should also provide a value for the root.
     
     Also allows a preparation, like for example change all nodes to
     start off as an empty dictionary prior to commencing the down-propagation
