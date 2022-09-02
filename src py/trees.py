@@ -3,7 +3,7 @@
 ########################################################################
 
 from worlds import *
-from trees import *
+from formulas import *
 
 class FrozenTree():
   """A tree with frozen node structure (the nodes may be mutable)."""
@@ -36,11 +36,10 @@ class FrozenBinaryTree():
   @staticmethod
   def static_dirty_get_root_of_node_list(list_of_nodes):
     # Currently does not check data is consistent
-    for node in list_of_nodes:
-      if node.parent == None:
-        root = node
-        break
-    return root
+    root_candidate = list_of_nodes[0]:
+    while root_candidate.parent != None:
+      root_candidate = root_candidate.parent
+    return root_candidate
   
   def get_root(self):
     """Returns root of tree."""
@@ -56,8 +55,9 @@ class FrozenBinaryTree():
     provide a value for the leaves.
     
     Also allows a preparation, like for example change all nodes to
-    start off as an empty dictionary prior to commencing the up-propagation
-    of the formula.
+    start off as an empty dictionary (essentially resetting the value
+    information but keeping the tree structure) prior to commencing the
+    up-propagation of the formula.
     """
     pass
     
@@ -71,8 +71,9 @@ class FrozenBinaryTree():
     The formula should also provide a value for the root.
     
     Also allows a preparation, like for example change all nodes to
-    start off as an empty dictionary prior to commencing the down-propagation
-    of the formula.
+    start off as an empty dictionary (essentially resetting the value
+    information but keeping the tree structure) prior to commencing the
+    down-propagation of the formula.
     """
     pass
 

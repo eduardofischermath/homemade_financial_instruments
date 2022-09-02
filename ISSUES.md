@@ -56,15 +56,20 @@ for assets behaving in binary trees via replication method (replication
 with asset and bond in arbitrage-free world). For example, for a put
 European option, if struck is K and fixed short rate is r, if a stands
 for value of the underlying asset, pe for pricing of the option, t for
-time, and subscripts p, l and r are for parent, left and right nodes in
-a three-node three, and T = t_l - t_p = t_r - t_p, then p_p is derived
-from p_l and p_r and other variables by:
+time, and subscripts p, l and r are for parent (itself), left and right
+nodes in a three-node three, and T = t_l - t_p = t_r - t_p, then p_p is
+derived from p_l and p_r and other variables by:
 
 PE_p = (a_p*(pe_r - pe_l) + exp(-r*T)*(pe_l*a_r - pe_r*a_l))/(a_r - a_l)
 
 and if the put option is American, denoted pa,
 
 pa_p = max(0, K - a_p, (formula above with pa instead of pe))
+
+This also includes implementing a formula/function handler. This is doable
+as SageMath has some functionality, but currently most of the code is
+simply an interface for what is essentially a function. Maybe need to
+implement something like symbolic variables (like SageMath or TensorFlow).
 
 ## ISSUE #0007py OPEN
 
