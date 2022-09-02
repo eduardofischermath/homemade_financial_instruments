@@ -20,4 +20,4 @@ class Formula():
     """Executes the formula on given arguments, allowing argument handling."""
     if self.argument_handler:
       args, kwargs = self.argument_handler(*args, **kwargs)
-    return self.inner_function(*args, **kwargs)
+    return self.inner_function(*args, **kwargs) # That is, __call__ of it

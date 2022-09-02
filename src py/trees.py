@@ -11,12 +11,12 @@ class FrozenTree():
 
 class FrozenBinaryTree():
   r"""
-  A tree with frozen node structure (the nodes may be mutable) and such that
-  every node has at most 2 child nodes.
+  A tree with frozen node structure (the nodes themselves may be mutable)
+  and such that every node has at most 2 child nodes.
   """
 
   def __init__(self, list_of_nodes, root = None, skip_checks = False):
-    # Currently assumes list of nodes is correct for a binary tree
+    # Currently assumes list of nodes does form a binary tree
     if not skip_checks:
       if not self.check_consistency_of_list_of_nodes(list_of_nodes):
         raise ValueError('Given nodes cannot form a binary tree.')
@@ -45,35 +45,40 @@ class FrozenBinaryTree():
     """Returns root of tree."""
     return self.root
 
-  def propagate_formula_up(self, formula, preparation):
+  def reset_all_nodes_to_value(self, value = None):
+    """Changes the values of all nodes to be the specified value."""
+    for node in self.list_of_nodes:
+      nodes.value = value
+      
+  def compute_formula_at_nodes(self, formula):
+    r"""
+    Uses a formula to create a value for a dictionary key which
+    will be present in a dictionary in every node of the tree.
+    
+    A formula is given which computes a dictionary value at a node based
+    on other dictionary values at the same node.
+    """
+    pass
+
+  def propagate_formula_up(self, formula):
     r"""
     Uses a formula to create a value for a dictionary key which
     will be present in a dictionary in every node of the tree.
     
     A formula is given which computes the value of a node based on the
     values of its left and right children. The formula should also
-    provide a value for the leaves.
-    
-    Also allows a preparation, like for example change all nodes to
-    start off as an empty dictionary (essentially resetting the value
-    information but keeping the tree structure) prior to commencing the
-    up-propagation of the formula.
+    provide a way to compute the value at the leaves.
     """
     pass
     
-  def propagate_formula_down(self, formula, preparation):
+  def propagate_formula_down(self, formula):
     r"""
     Uses a formula to create a value for a dictionary key which
     will be present in a dictionary in every node of the tree.
     
     A formula is given which computes the value of a node based on the
     values of its parent (and whether it is the left or right child node).
-    The formula should also provide a value for the root.
-    
-    Also allows a preparation, like for example change all nodes to
-    start off as an empty dictionary (essentially resetting the value
-    information but keeping the tree structure) prior to commencing the
-    down-propagation of the formula.
+    The formula should also a way to compute the value at the root.
     """
     pass
 
