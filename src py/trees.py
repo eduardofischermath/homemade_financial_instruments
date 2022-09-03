@@ -7,7 +7,22 @@ from formulas import *
 
 class FrozenTree():
   """A tree with frozen node structure (the nodes may be mutable)."""
-  pass
+
+  def reset_all_nodes_to_value(self, value = None):
+    """Changes the values of all nodes to be the specified value."""
+    for node in self.list_of_nodes:
+      nodes.value = value
+  
+  def reset_all_nodes_to_dict_with_given_keys(self, keys):
+    """Puts a dictionary with given keys (corresponding values being None) at every node."""
+    new_dict = {}
+    for key in keys:
+      new_dict[key] = None
+    self.reset_all_nodes_to_value(new_dict)
+    
+  def reset_all_nodes_to_empty_dictionary(self):
+    """Puts an empty dictionary as value of every note."""
+    self.reset_all_nodes_to_dict_with_given_keys([])
 
 class FrozenBinaryTree():
   r"""
@@ -44,12 +59,7 @@ class FrozenBinaryTree():
   def get_root(self):
     """Returns root of tree."""
     return self.root
-
-  def reset_all_nodes_to_value(self, value = None):
-    """Changes the values of all nodes to be the specified value."""
-    for node in self.list_of_nodes:
-      nodes.value = value
-      
+  
   def compute_formula_at_nodes(self, formula):
     r"""
     Uses a formula to create a value for a dictionary key which
