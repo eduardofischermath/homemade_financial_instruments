@@ -78,9 +78,9 @@ Implement formulas for up-propagationand via risk-neutral method
 outcomes and the value of something is "essentially" (need to adjust for
 interest rate) equal to its expected value under those probabilities).
 
-## ISSUE #0008 OPEN
+## ISSUE #0008 COMPLETE
 
-Add to each file a header related to author/e-mail and the license.
+Add to each file a header related to author, copyright and license.
 
 ## ISSUE #0009py OPEN
 
