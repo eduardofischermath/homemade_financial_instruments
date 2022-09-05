@@ -6,22 +6,22 @@ from worlds import *
 from formulas import *
 
 class FrozenTree():
-  """A tree with frozen node structure (the nodes may be mutable)."""
+  """A tree with frozen node structure (the nodes may have mutable data)."""
 
-  def reset_all_nodes_to_value(self, value = None):
-    """Changes the values of all nodes to be the specified value."""
+  def set_constant_data_in_all_nodes(self, data = None):
+    """Changes the data of all nodes to be the specified data."""
     for node in self.list_of_nodes:
-      nodes.value = value
+      nodes.data = data
   
   def reset_all_nodes_to_dict_with_given_keys(self, keys):
     """Puts a dictionary with given keys (corresponding values being None) at every node."""
     new_dict = {}
     for key in keys:
       new_dict[key] = None
-    self.reset_all_nodes_to_value(new_dict)
+    self.set_constant_data_in_all_nodes(new_dict)
     
   def reset_all_nodes_to_empty_dictionary(self):
-    """Puts an empty dictionary as value of every note."""
+    """Puts an empty dictionary as data of every node."""
     self.reset_all_nodes_to_dict_with_given_keys([])
 
 class FrozenBinaryTree():
@@ -60,7 +60,7 @@ class FrozenBinaryTree():
     """Returns root of tree."""
     return self.root
   
-  def compute_formula_at_nodes(self, formula):
+  def compute_formula_at_nodes(self, given_key, formula):
     r"""
     Uses a formula to create a value for a dictionary key which
     will be present in a dictionary in every node of the tree.
@@ -70,25 +70,27 @@ class FrozenBinaryTree():
     """
     pass
 
-  def propagate_formula_up(self, formula):
+  def propagate_formula_up(self, given_key, formula):
     r"""
-    Uses a formula to create a value for a dictionary key which
-    will be present in a dictionary in every node of the tree.
+    Works when every node has a dictionary as data.
     
-    A formula is given which computes the value of a node based on the
-    values of its left and right children. The formula should also
-    provide a way to compute the value at the leaves.
+    Uses a formula to create a value for a dictionary key at each node.
+    
+    A formula is given which computes the value of that dict key at that node
+    based on the data of its left and right children. The formula should
+    also provide a way to compute the value at the leaves.
     """
     pass
     
-  def propagate_formula_down(self, formula):
+  def propagate_formula_down(self, given_key, is_right_node_instead_of_left, formula):
     r"""
-    Uses a formula to create a value for a dictionary key which
-    will be present in a dictionary in every node of the tree.
+    Works when every node has a dictionary as data.
     
-    A formula is given which computes the value of a node based on the
-    values of its parent (and whether it is the left or right child node).
-    The formula should also a way to compute the value at the root.
+    Uses a formula to create a value for a dictionary key at each node.
+    
+    A formula is given which computes the value of that dict key at that node
+    based on the data of its parent (and whether it is the left or right
+    child node). The formula should also a way to compute the value at the root.
     """
     pass
 
@@ -107,10 +109,10 @@ class FrozenCompleteBinaryTree(FrozenBinaryTree):
 class FrozenBinaryTreeNode():
   """A node in a FrozenBinaryTree"""
   
-  def __init__(self, value, parent = None, left = None, right = None):
+  def __init__(self, data, parent = None, left = None, right = None):
     # By definition left and right must be both None or both non-None
     # (Currently the requirement is not enforced)
-    self.value = value
+    self.data = data
     self.parent = parent
     self.left = left
     self.right = right

@@ -101,7 +101,7 @@ Also, add function outside classes for transformation into and out of
 percentage (probably better outside classes than a method of a class
 designed specifically for that).
 
-## ISSUE #0012 OPEN
+## ISSUE #0012 COMPLETE
 
 Due to the fact that the words "key" and "value" are used in the context
 of a Python dictionary, replace the word "value" for "data" in the context
