@@ -44,12 +44,12 @@ long names which might hinder development.
 Add argument default_if_failed_conversion to input capturing/purifying,
 spread it to neighbor functions.
 
-## ISSUE #0005py OPEN
+## ISSUE #0005py ONGOING
 
 Implement up-propagation (from leaves to root) and down-propagation
 (from root to leaves) on binary trees.
 
-## ISSUE #0006py OPEN
+## ISSUE #0006py ONGOING
 
 Implement formulas for up-propagation  for pricing of vanilla options
 for assets behaving in binary trees via replication method (replication
@@ -100,3 +100,9 @@ Work on uniformizations (for example, interest rate and dividend rate).
 Also, add function outside classes for transformation into and out of
 percentage (probably better outside classes than a method of a class
 designed specifically for that).
+
+## ISSUE #0012 OPEN
+
+Due to the fact that the words "key" and "value" are used in the context
+of a Python dictionary, replace the word "value" for "data" in the context
+of the content of a node (in a tree).
