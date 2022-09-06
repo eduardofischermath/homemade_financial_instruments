@@ -45,3 +45,25 @@ class Formula():
     if self.argument_handler:
       args, kwargs = self.argument_handler(*args, **kwargs)
     return self.inner_function(*args, **kwargs) # That is, __call__ of it
+    
+class FormulaOnDictionaries():
+  r"""
+  An object implementing a kind of formula/function whose action is based
+  on values of dictionaries passed as their variables/arguments.
+  
+  It is done by wrapping over a regular Formula so that it will be called
+  after the correct variables/arguments are extracted from the given dicts.
+  This Formula (or alternatively its instantiation arguments) and the
+  dictionary for correct extraction for are given at instantiation.
+  """
+  
+  def __init__(self, dict_for_argument_extraction, inner_formula = None,
+      inner_function = None, argument_handler = None):
+    if inner_formula is None:
+      inner_formula = Formula(inner_function, argument_handler)
+    self.inner_formula = inner_formula
+    self.dict_for_argument_extraction = dict_for_argument_extraction
+
+  def call(self, *args, **kwargs):
+    ### WORK HERE
+    return self.inner_formula.call(**computed_kwargs)

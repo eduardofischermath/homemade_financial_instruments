@@ -71,6 +71,9 @@ as SageMath has some functionality, but currently most of the code is
 simply an interface for what is essentially a function. Maybe need to
 implement something like symbolic variables (like SageMath or TensorFlow).
 
+Maybe the Formula (including the FormulaOnDictionaries wrapper) needs to
+be made to accept only named arguments?
+
 ## ISSUE #0007py OPEN
 
 Implement formulas for up-propagationand via risk-neutral method
