@@ -117,6 +117,31 @@ class DictionaryArgumentProcessor():
     self.allow_incomplete_tuple = allow_incomplete_tuple
     
   def transform(args, kwargs):
+    r"""
+    Tranforms/processes a tuple and a dict into new ones according to
+    rules set out in the dictionary for argument processing.
+    """
     # Note: sometimes what is done is called transformation, sometimes processing
+    pre_new_args = {} # First do a dictionary, convert to tuple later
+    new_kwargs = {}
+    for key, value in self.dict_for_argument_processing.items():
+      if isinstance(key, int) and key >= 0:
+        dict_to_act_on = pre_new_args
+      elif isinstance(key, str):
+        dict_to_act_on = new_kwargs
+      else:
+        raise TypeError('keys must be either strings nonnegative integers')
+      if value[0].lower() == 'a':
+        new_value = args[value[1]][value[2]]
+      elif value[0].lower() == 'k':
+        new_value = kwargs[value[1]][value[2]]
+      else:
+        raise ValueError('First item of value should start with \'a\' or \'k\'')
+      # Raise error if repeated to avoid mysterious behavior
+      if key not in dict_to_act_on:
+        dict_to_act_on[key] = new_value
+      else:
+        raise ValueError('Keys cannot be repeated') # Maybe move check to __init__?
+    # Make pre_new_args into a tuple
     ### WORK HERE ###
     return (new_args, new_kwargs)
