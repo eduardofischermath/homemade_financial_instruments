@@ -65,5 +65,27 @@ class FormulaOnDictionaries():
     self.dict_for_argument_extraction = dict_for_argument_extraction
 
   def call(self, *args, **kwargs):
-    ### WORK HERE
+    """Executes the inner formula and therefore the inner function"""
+    for key in dict_for_argument_extraction:
+      pass
     return self.inner_formula.call(**computed_kwargs)
+
+class DictionaryArgumentProcessor():
+  r"""
+  Transforms non-keyword and keyword arguments (that is, a tuple and a
+  dictionary) into new non-keyword and keyword arguments using a specific
+  dictionary given at its initiation.
+  
+  In more detail, the variable dict_for_argument_extraction is a dict
+  whose keys are strings and whose values are length three tuples. The
+  first of these items is either 'arg' or 'kwarg'. The second is a nonnegative
+  integer if the first item is 'arg', and a string otherwise. The third
+  is always a string. This is done so that, in the call method called
+  with non-keyword arguments args and keyword arguments kwargs, the inner
+  formula is called with the a dict of keyword arguments whose keys are
+  the keys of dict_for_argument_extraction and whose values are
+  args[value[1]][value[2]] if value[0] is 'arg' and
+  kwargs[value[1]][value[2]] if value[0] is 'kwargs'.
+  """
+  
+  pass
