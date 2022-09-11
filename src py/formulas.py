@@ -52,9 +52,11 @@ class FormulaOnDictionaries():
   on values of dictionaries passed as their variables/arguments.
   
   It is done by wrapping over a regular Formula so that it will be called
-  after the correct variables/arguments are extracted from the given dicts.
+  after the correct variables/arguments are extracted from the dicts
+  given as non-keyword or keyword arguments during the call method.
   This Formula (or alternatively its instantiation arguments) and the
-  dictionary for correct extraction for are given at instantiation.
+  dictionary for correct extraction (or alternatively the appropriate
+  argument transforming/processing object) for are given at instantiation.
   """
   
   def __init__(self, dict_for_argument_processing, inner_formula = None,
@@ -122,11 +124,11 @@ class DictionaryArgumentProcessor():
     rules set out in the dictionary for argument processing.
     """
     # Note: sometimes what is done is called transformation, sometimes processing
-    pre_new_args = {} # First do a dictionary, convert to tuple later
+    pre_pre_new_args = {} # First do a dictionary, convert to tuple later
     new_kwargs = {}
     for key, value in self.dict_for_argument_processing.items():
       if isinstance(key, int) and key >= 0:
-        dict_to_act_on = pre_new_args
+        dict_to_act_on = pre_pre_new_args
       elif isinstance(key, str):
         dict_to_act_on = new_kwargs
       else:
@@ -142,6 +144,18 @@ class DictionaryArgumentProcessor():
         dict_to_act_on[key] = new_value
       else:
         raise ValueError('Keys cannot be repeated') # Maybe move check to __init__?
-    # Make pre_new_args into a tuple
-    ### WORK HERE ###
+    # Make pre_pre_new_args into a list then a tuple
+    max_index_in_tuple = -1 # Empty tuple
+    for key in pre_pre_new_args:
+      max_index_in_tuple = max(max_index_in_tuple, key)
+    if not complete_args_with_nones:
+      if len(pre_pre_new_args) != max_index_in_tuple + 1:
+        raise ValueError('Integer keys of dict must form a full range.')
+    pre_new_args = []
+    for idx in range(max_index_in_tuple):
+      if idx in pre_pre_new_args:
+        pre_new_args.append(pre_pre_new_args[idx])
+      else:
+        pre_new_args.append(None)
+    new_args = tuple(pre_new_args)
     return (new_args, new_kwargs)
