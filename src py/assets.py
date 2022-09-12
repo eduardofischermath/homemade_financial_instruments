@@ -377,7 +377,7 @@ class EqualUpDownBinaryTreeAsset(BinaryTreeAsset):
 ########################################################################
 
 class Derivative(Asset):
-  """For any derivative or financial instrument"""
+  """A derivative (asset whose value depends on another asset)"""
   
   def __init__(self, underlying):
     """Sets the asset which is the underlying of the derivative"""

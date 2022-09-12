@@ -109,3 +109,8 @@ designed specifically for that).
 Due to the fact that the words "key" and "value" are used in the context
 of a Python dictionary, replace the word "value" for "data" in the context
 of the content of a node (in a tree).
+
+## ISSUE #0013 OPEN
+
+Consider renaming the project to Homemade Financial Instruments.
+(Or something else, or not rename at all.)
