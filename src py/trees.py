@@ -26,7 +26,6 @@
 
 ########################################################################
 
-from worlds import *
 from formulas import *
 
 class FrozenTree():
@@ -84,37 +83,49 @@ class FrozenBinaryTree():
     """Returns root of tree."""
     return self.root
   
-  def compute_formula_at_nodes(self, given_key, formula):
+  def compute_formula_at_nodes(self, output_key, formula_on_dicts):
     r"""
-    Uses a formula to create a value for a dictionary key which
+    Uses a formula to create or update a value for a dictionary key which
     will be present in a dictionary in every node of the tree.
     
     A formula is given which computes a dictionary value at a node based
     on other dictionary values at the same node.
+    
+    More specifically, it uses a FormulaOnDictionaries with named
+    keyword dict arguments called node_dict and all_other_args.
     """
     pass
 
-  def propagate_formula_up(self, given_key, formula):
+  def propagate_formula_up(self, output_key, formula_on_dicts):
     r"""
     Works when every node has a dictionary as data.
     
-    Uses a formula to create a value for a dictionary key at each node.
+    Uses a formula to create or update a value for a dictionary key at each node.
     
     A formula is given which computes the value of that dict key at that node
     based on the data of its left and right children. The formula should
     also provide a way to compute the value at the leaves.
+    
+    More specifically, it uses a FormulaOnDictionaries with named
+    keyword dict arguments called parent_node_dict, left_child_dict,
+    right_child_dict and all_other_args.
     """
     pass
     
-  def propagate_formula_down(self, given_key, is_right_node_instead_of_left, formula):
+  def propagate_formula_down(self, output_key, formula_on_dicts):
     r"""
     Works when every node has a dictionary as data.
     
-    Uses a formula to create a value for a dictionary key at each node.
+    Uses a formula to create or update a value for a dictionary key at each node.
     
     A formula is given which computes the value of that dict key at that node
     based on the data of its parent (and whether it is the left or right
     child node). The formula should also a way to compute the value at the root.
+    
+    More specifically, it uses a FormulaOnDictionaries with named
+    keyword dict arguments called parent_node_dict, left_child_dict,
+    right_child_dict and all_other_args. The dictionary all_other_args
+    must have a key named is_it_left_instead_of_right.
     """
     pass
 
