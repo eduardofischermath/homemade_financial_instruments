@@ -31,6 +31,7 @@
 ########################################################################
 
 from worlds import *
+from formulas import *
 
 class Asset():
   r"""
@@ -363,6 +364,24 @@ class EqualUpDownBinaryTreeAsset(BinaryTreeAsset):
       return path_of_values
     all_paths_of_values = map(create_path_of_values_from_signs, possible_paths_of_signs)
     return all_paths_of_values
+
+  def compute_formula_on_dictionary_for_modeling_tree(self):
+    """Returns formula which can be used to make a tree modeling the asset."""
+    # self.initial_value at root, then subtract self.jump_amount each time the
+    #left child is taken, and add self.jump_amount each time the right child is taken
+    def inner_function(is_it_left_instead_or_right, parent_value, jump_amount):
+      if is_it_left_instead_or_right:
+        return parent_value - jump_amount
+      else:
+        return parent_value + jump_amount
+    inner_formula = Formula(inner_function)
+    formula_on_dicts = FormulaOnDictionaries(processing_dict, inner_formula)
+    return formula_on_dicts
+    
+  def build_modeling_tree(self, max_time):
+    """Returns tree modeling the asset for specified amount of time."""
+    ### WORK HERE ###
+    return NotImplementedError('Working on it')
     
   def compute_path_probabilities_in_risk_neutral_world(self, world, max_time):
     r"""
