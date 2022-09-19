@@ -31,7 +31,7 @@ from formulas import *
 class FrozenTree():
   """A tree with frozen node structure (the nodes may have mutable data)."""
 
-  def set_constant_data_in_all_nodes(self, data = None):
+  def reset_all_nodes_to_specific_data(self, data = None):
     """Changes the data of all nodes to be the specified data."""
     for node in self.list_of_nodes:
       nodes.data = data
@@ -41,13 +41,13 @@ class FrozenTree():
     new_dict = {}
     for key in keys:
       new_dict[key] = None
-    self.set_constant_data_in_all_nodes(new_dict)
+    self.reset_all_nodes_to_specific_data(new_dict)
     
   def reset_all_nodes_to_empty_dictionary(self):
     """Puts an empty dictionary as data of every node."""
     self.reset_all_nodes_to_dict_with_given_keys([])
 
-class FrozenBinaryTree():
+class FrozenBinaryTree(FrozenTree):
   r"""
   A tree with frozen node structure (the nodes themselves may be mutable)
   and such that every node has at most 2 child nodes.
@@ -82,7 +82,10 @@ class FrozenBinaryTree():
   def get_root(self):
     """Returns root of tree."""
     return self.root
-  
+
+class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
+  """A frozen binary tree having dictionaries as data in all nodes."""
+
   def compute_formula_at_nodes(self, output_key, formula_on_dicts):
     r"""
     Uses a formula to create or update a value for a dictionary key which
@@ -98,8 +101,6 @@ class FrozenBinaryTree():
 
   def propagate_formula_up(self, output_key, formula_on_dicts):
     r"""
-    Works when every node has a dictionary as data.
-    
     Uses a formula to create or update a value for a dictionary key at each node.
     
     A formula is given which computes the value of that dict key at that node
@@ -114,8 +115,6 @@ class FrozenBinaryTree():
     
   def propagate_formula_down(self, output_key, formula_on_dicts):
     r"""
-    Works when every node has a dictionary as data.
-    
     Uses a formula to create or update a value for a dictionary key at each node.
     
     A formula is given which computes the value of that dict key at that node
