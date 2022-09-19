@@ -85,7 +85,7 @@ interest rate) equal to its expected value under those probabilities).
 
 Add to each file a header related to author, copyright and license.
 
-## ISSUE #0009py OPEN
+## ISSUE #0009py COMPLETE
 
 Add methods to navigate through nodes among a tree. For example, in a way that takes
 a node and a string such as "plr" and produces the parent node of the given node,

@@ -126,12 +126,80 @@ class FrozenBinaryTree(FrozenTree):
     
   def get_parent_of_node_in_tree(self, node):
     """Returns parent of node, or None if root."""
-    putative_parent = None
-    for other_node in self.list_of_nodes:
-      if other_node.left == node or other_node.right == node:
-        putative_parent = other_node
-        break
-    return putative_parent
+    if hasattr(self, dict_of_parents):
+      return sef.dict_of_parents[node]
+    else:
+      putative_parent = None
+      for other_node in self.list_of_nodes:
+        if other_node.left == node or other_node.right == node:
+          putative_parent = other_node
+          break
+      return putative_parent
+
+  def create_dict_of_parents(self, set_as_attribute_instead_of_returning = False,
+      ignore_if_already_set = False):
+    r"""
+    Creates a dictionary associating to each node its parent (or None for the root).
+    
+    Has the option of either returning the dictionary or setting it as
+    an attribute dict_of_parents of the instance (and returning None).
+    
+    Has the option to consider or ignore a dict_of_parents previously set
+    as attribute. If not ignored and the attribute is set, then the method
+    simply uses it.
+    """
+    if ignore_if_already_set and hasattr(self, dict_of_parents):
+      dict_of_parents = self.dict_of_parents
+    else:
+      dict_of_parents = {}
+      for node in self.list_of_nodes:
+        if node.left != None:
+          dict_of_parents[node.left] = node
+        if node.right != None:
+          dict_of_parents[node.right] = node
+    if set_as_attribute_instead_of_returning:
+      self.dict_of_parents = dict_of_parents
+      return None
+    else:
+      return dict_of_parents
+    
+  def navigate_tree_by_string(self, node, string, raise_error_if_string_has_invalid_chars = True,
+      raise_error_if_navigation_leads_to_none = True):
+    r"""
+    Given an initial node and a string made with the characters 'p', 'l' and 'r'
+    will produce the node obtaining from the operations of successfuly
+    taking parent (for 'p') or left child (for 'l') or right child (for 'r')
+    starting from the initial node.
+    
+    Has option to allow for staying in place if a 'p', 'l' or 'r' instruction
+    is provided which would lead to no node.
+    """
+    # Since this might be called multiple times it might be useful to set
+    #all parents at once instead of searching every time
+    create_dict_of_parents(self, set_as_attribute_instead_of_returning = True,
+        ignore_if_already_set = False)
+    current_node = node
+    for char in string:
+      if char.lower() == 'p':
+        putative_next_node = self.dict_of_parents[current_node]
+      elif char.lower() == 'l':
+        putative_next_node = current_node.left
+      elif char.lower() == 'r':
+        putative_next_node = current_node.right
+      else:
+        if raise_error_if_string_has_invalid_chars:
+          raise ValueError('String should contain only \'p\', \'l\' and \'r\'.')
+        else:
+          pass
+      # Every new potential node needs to be checked if it is a node in tree
+      if putative_next_node is not None:
+        current_node = putative_next_node
+      else:
+        if raise_error_if_navigation_leads_to_none:
+          raise ValueError('Cannot follow path for navigation inside tree.')
+        else:
+          pass # current_node stays as it is for this loop iteration
+    return current_node
 
 class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
   """A frozen binary tree having dictionaries as data in all nodes."""
