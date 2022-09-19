@@ -99,7 +99,7 @@ def evaluate_vanilla_option_using_binary_tree_demo():
   list_of_args.append({
       'message': 'Which kind of option? [C]all or [P]ut option? (Default: Call)\n',
       'type_to_convert_to': bool,
-      'pre_conversion_purifying_formula': lambda s: detect_initial(s, 'p')
+      'pre_conversion_purifying_formula': lambda s: detect_initial(s, 'p'),
       'public_variable_name': 'is_put_instead_of_call',
       'request_exhibition': True})
   list_of_args.append({
@@ -120,31 +120,31 @@ def evaluate_vanilla_option_using_binary_tree_demo():
       'type_to_convert_to': str,
       'pre_conversion_purifying_formula': lambda s: s[0].lower() if s else 'm',
       'public_variable_name': 'time_unit_for_step',
-      'request_exhibition': True}))
+      'request_exhibition': True})
   list_of_args.append({
       'message': 'Enter duration of a single step in previous time unit. (Default: 1)\n',
       'type_to_convert_to': float,
-      'pre_conversion_purifying_formula': None 
+      'pre_conversion_purifying_formula': None,
       'public_variable_name': 'duration_of_single_step',
-      'request_exhibition': True}))  
+      'request_exhibition': True})
   list_of_args.append({
       'message': 'Enter number of steps in binary tree. (Default: 4)\n',
       'type_to_convert_to': int,
       'pre_conversion_purifying_formula': None,
       'public_variable_name': 'number_of_steps',
-      'request_exhibition': True}))
+      'request_exhibition': True})
   list_of_args.append({
       'message': 'Enter initial value of base asset. (Default: 100)\n',
       'type_to_convert_to': float,
       'pre_conversion_purifying_formula': None,
       'public_variable_name': 'initial_value',
-      'request_exhibition': True}))
+      'request_exhibition': True})
   list_of_args.append({
       'message': 'Enter number of steps in binary tree. (Default: 10)\n',
       'type_to_convert_to': float,
       'pre_conversion_purifying_formula': None,
       'public_variable_name': 'number_of_steps',
-      'request_exhibition': True}))  
+      'request_exhibition': True})
   # Call relevant function and print it
   print('')
   return None # Imperative

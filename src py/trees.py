@@ -74,7 +74,7 @@ class FrozenBinaryTree(FrozenTree):
   @staticmethod
   def static_dirty_get_root_of_node_list(list_of_nodes):
     # Currently does not check data is consistent
-    root_candidate = list_of_nodes[0]:
+    root_candidate = list_of_nodes[0]
     while root_candidate.parent != None:
       root_candidate = root_candidate.parent
     return root_candidate
@@ -82,6 +82,15 @@ class FrozenBinaryTree(FrozenTree):
   def get_root(self):
     """Returns root of tree."""
     return self.root
+    
+  def get_parent_of_node_in_tree(self, node):
+    """Returns parent of node, or None if root."""
+    putative_parent = None
+    for other_node in self.list_of_nodes:
+      if other_node.left == node or other_node.right == node:
+        putative_parent = other_node
+        break
+    return putative_parent
 
 class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
   """A frozen binary tree having dictionaries as data in all nodes."""
@@ -137,13 +146,59 @@ class FrozenPerfectBinaryTree(FrozenBinaryTree):
         raise ValueError('Given nodes cannot form a perfect binary tree.')
     super().__init__(list_of_nodes = list_of_nodes, root = root, skip_checks = True)
 
+  def __len__(self):
+    """Returns the length or size of the tree, that is, its number of nodes"""
+    return len(list_of_nodes)
+    
+  def get_height(self):
+    """Returns the height, that is, the distance from root to every leaf node"""
+    # A perfect tree of height h has n = 2**(h + 1) - 1 nodes
+    # So h is obtained as h = log2(n+1) - 1
+    # This can be done with either math.log2 or bit_length, which returns
+    #one more than the logarhith on powers of 2
+    return (len(self) + 1).bit_length() - 2
+
+  @classmethod
+  def create_perfect_binary_tree(cls, height, data = None):
+    r"""
+    Creates an instance (of FrozenPerfectBinaryTree or subclass) of given height
+    holding given data at every node.
+    """
+    # At the moment does not check if height is nonnegative integer
+    # Produce a list of nodes such that the node in position 0 is the root
+    #and such that the left and right child of the node in position idx
+    #are at 2*idx + 1 and 2*idx + 2 respectively
+    # Need to start node creation by the leaves and then go up
+    number_of_nodes = 2**(height + 1) - 1
+    list_of_nodes = [None]*number_of_nodes
+    index_of_first_leaf = 2**height - 1
+    for idx in reversed(range(number_of_nodes)):
+      if idx >= index_of_first_leaf:
+        list_of_nodes[idx] = FrozenBinaryTreeNode(data = data, left = None, right = None)
+      else:
+        left = list_of_nodes[2*idx + 1]
+        right = list_of_nodes[2*idx + 2]
+        list_of_nodes[idx] = FrozenBinaryTreeNode(data = data, left = left, right = right)
+    frozen_perfect_binary_tree = cls(
+        list_of_nodes = list_of_nodes,
+        root = list_of_nodes[0],
+        skip_checks = True)
+    return frozen_perfect_binary_tree
+
+  @classmethod
+  def create_perfect_binary_tree_of_empty_dicts(cls, height):
+    """Creates a perfect binary tree holding empty dicts in every node."""
+    return create_perfect_binary_tree(cls, height, data = {})
+
+class FrozenPerfectBinaryTreeOfDicts(FrozenPerfectBinaryTree, FrozenBinaryTreeOfDicts):
+  """A frozen perfect binary tree having dictionaries as data in every node."""
+  
+  pass
+  
 class FrozenBinaryTreeNode():
   """A node in a FrozenBinaryTree"""
   
-  def __init__(self, data, parent = None, left = None, right = None):
-    # By definition left and right must be both None or both non-None
-    # (Currently the requirement is not enforced)
+  def __init__(self, data, left = None, right = None):
     self.data = data
-    self.parent = parent
     self.left = left
     self.right = right
