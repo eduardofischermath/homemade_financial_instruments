@@ -22,7 +22,7 @@
 
 ########################################################################
 
-# For tree structures, focusing on binary (and may complete) trees
+# For tree structures, focusing on binary (and may perfect) trees
 
 ########################################################################
 
@@ -66,9 +66,9 @@ class FrozenBinaryTree(FrozenTree):
       self.root = self.static_dirty_get_root_of_node_list(list_of_nodes)
 
   @staticmethod
-  def check_consistency_of_list_of_nodes(list_of_nodes, require_completeness = False):
-    """Checks if nodes form a binary tree (or a complete binary tree)"""
-    # Currently assumes list of nodes is correct for a (complete) binary tree
+  def check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = False):
+    """Checks if nodes form a binary tree (or a perfect binary tree)"""
+    # Currently assumes list of nodes is correct for a (perfect) binary tree
     return True
 
   @staticmethod
@@ -128,17 +128,14 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     """
     pass
 
-class FrozenCompleteBinaryTree(FrozenBinaryTree):
+class FrozenPerfectBinaryTree(FrozenBinaryTree):
   """A FrozenBinaryTree of constant height [distance from leafs to root]."""
 
   def __init__(self, list_of_nodes, root = None, skip_checks = False):
     if not skip_checks:
-      if not self.check_consistency_of_list_of_nodes(list_of_nodes, require_completeness = True):
-        raise ValueError('Given nodes cannot form a complete binary tree.')
+      if not self.check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = True):
+        raise ValueError('Given nodes cannot form a perfect binary tree.')
     super().__init__(list_of_nodes = list_of_nodes, root = root, skip_checks = True)
-
-  def create_from_BinaryTreeAsset(binary_tree_asset):
-    pass
 
 class FrozenBinaryTreeNode():
   """A node in a FrozenBinaryTree"""
