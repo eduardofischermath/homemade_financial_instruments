@@ -53,17 +53,24 @@ class FrozenBinaryTree(FrozenTree):
   and such that every node has at most 2 child nodes.
   """
 
-  def __init__(self, list_of_nodes, root = None, skip_checks = False):
-    # Currently assumes list of nodes does form a binary tree
-    if not skip_checks:
-      if not self.check_consistency_of_list_of_nodes(list_of_nodes):
-        raise ValueError('Given nodes cannot form a binary tree.')
-    self.list_of_nodes = list_of_nodes
-    # Shortcut for root insertion (currently assumes it is indeed the root)
-    if root is not None:
+  def __init__(self, list_of_nodes = None, root = None, skip_checks = False):
+    # Can be formed by either giving its root or by providing a list of all nodes
+    if list_of_nodes != None:
+      # Currently assumes list of nodes does form a binary tree
+      if not skip_checks:
+        if not self.check_consistency_of_list_of_nodes(list_of_nodes):
+          raise ValueError('Given nodes cannot form a binary tree.')
+      self.list_of_nodes = list_of_nodes
+      # Shortcut for root insertion (currently assumes it is indeed the root)
+      if root is not None:
+        self.root = root
+      else:
+        self.root = self.static_dirty_get_root_of_node_list(list_of_nodes)
+    elif root != None:
       self.root = root
+      self.list_of_nodes = self.static_dirty_get_list_of_nodes_from_root(self.root)
     else:
-      self.root = self.static_dirty_get_root_of_node_list(list_of_nodes)
+      raise ValueError('Needs either root or list of nodes to build instance')
 
   @staticmethod
   def check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = False):
@@ -73,11 +80,25 @@ class FrozenBinaryTree(FrozenTree):
 
   @staticmethod
   def static_dirty_get_root_of_node_list(list_of_nodes):
+    """Obtains the root from a list of nodes."""
     # Currently does not check data is consistent
     root_candidate = list_of_nodes[0]
     while root_candidate.parent != None:
       root_candidate = root_candidate.parent
     return root_candidate
+    
+  @staticmethod
+  def static_dirty_get_list_of_nodes_from_root(root):
+    """Produces a list of all nodes which are descendents of a given node."""
+    list_of_nodes = []
+    def navigate_tree_and_append_node_to_list(node, list_of_nodes):
+      list_of_nodes.append(node)
+      if node.left != None:
+        navigate_breadth_first_and_append_children_to_list(node.left, list_of_nodes)
+      if node.right != None:
+        navigate_breadth_first_and_append_children_to_list(node.right, list_of_nodes)
+    list_of_nodes = navigate_tree_and_append_node_to_list(root, list_of_nodes)
+    return list_of_nodes
   
   def get_root(self):
     """Returns root of tree."""
