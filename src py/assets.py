@@ -375,6 +375,10 @@ class EqualUpDownBinaryTreeAsset(BinaryTreeAsset):
       else:
         return parent_value + jump_amount
     inner_formula = Formula(inner_function)
+    processing_dict = {
+        'parent_value': ('kwargs', 'parent_node_dict', 'asset_value'), 
+        'jump_amount': ('kwargs', 'all_other_args', 'jump_amount'),
+        'is_it_left_instead_or_right': ('kwargs', '', 'is_it_left_instead_or_right')}
     formula_on_dicts = FormulaOnDictionaries(processing_dict, inner_formula)
     return formula_on_dicts
     
@@ -389,7 +393,6 @@ class EqualUpDownBinaryTreeAsset(BinaryTreeAsset):
     Returns list with 2**max_time items, each item a tuple of the possible path
     and its probability"""
     interest_rate = world.get_interest_rate()
-    # Will need to define trees...
     ### WORK HERE ###
     return NotImplementedError('Working on it')
 
