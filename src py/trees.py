@@ -58,14 +58,25 @@ class FrozenBinaryTree(FrozenTree):
     if list_of_nodes != None:
       # Currently assumes list of nodes does form a binary tree
       if not skip_checks:
-        if not self.check_consistency_of_list_of_nodes(list_of_nodes):
+        if not self.check_consistency_of_list_of_nodes(
+            list_of_nodes = list_of_nodes,
+            require_perfectness = False,
+            return_boolean_instead_of_potentially_raising_error = True):
           raise ValueError('Given nodes cannot form a binary tree.')
       self.list_of_nodes = list_of_nodes
-      # Shortcut for root insertion (currently assumes it is indeed the root)
-      if root is not None:
+      # Shortcut for root insertion
+      if skip_checks and root is not None:
         self.root = root
       else:
-        self.root = self.static_dirty_get_root_of_node_list(list_of_nodes)
+        computed_root = self.static_dirty_get_root_of_node_list(list_of_nodes)
+        if root is None:
+          self.root = computed_root
+        else:
+          # In this case root is not None and skip_checks is False
+          if root == computed_root:
+            self.root = computed_root
+          else:
+            raise ValueError('Given root is not root of given list of nodes')
     elif root != None:
       self.root = root
       self.list_of_nodes = self.static_dirty_get_list_of_nodes_from_root(self.root)
@@ -73,15 +84,24 @@ class FrozenBinaryTree(FrozenTree):
       raise ValueError('Needs either root or list of nodes to build instance')
 
   @staticmethod
-  def check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = False):
-    """Checks if nodes form a binary tree (or a perfect binary tree)"""
+  def check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = False,
+      return_boolean_instead_of_potentially_raising_error = False):
+    r"""
+    Checks if nodes form a binary tree (or a perfect binary tree).
+    
+    It can be set up to return True or False (if it passes or fails the test,
+    respectively), or to raise an Error if fails the test and doing nothing
+    if it passes."""
     # Currently assumes list of nodes is correct for a (perfect) binary tree
-    return True
+    if return_boolean_instead_of_potentially_raising_error:
+      return True
+    else:
+      return None
 
   @staticmethod
-  def static_dirty_get_root_of_node_list(list_of_nodes):
+  def static_dirty_get_root_of_node_list(list_of_nodes, skip_checks = False):
     """Obtains the root from a list of nodes."""
-    # Currently does not check data is consistent
+    # Currently does not check nodes consistently form a tree
     root_candidate = list_of_nodes[0]
     while root_candidate.parent != None:
       root_candidate = root_candidate.parent
@@ -161,9 +181,12 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
 class FrozenPerfectBinaryTree(FrozenBinaryTree):
   """A FrozenBinaryTree of constant height [distance from leafs to root]."""
 
-  def __init__(self, list_of_nodes, root = None, skip_checks = False):
+  def __init__(self, list_of_nodes = None, root = None, skip_checks = False):
     if not skip_checks:
-      if not self.check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = True):
+      if not self.check_consistency_of_list_of_nodes(
+          list_of_nodes = list_of_nodes,
+          require_perfectness = True,
+          return_boolean_instead_of_potentially_raising_error = True):
         raise ValueError('Given nodes cannot form a perfect binary tree.')
     super().__init__(list_of_nodes = list_of_nodes, root = root, skip_checks = True)
 
@@ -175,14 +198,14 @@ class FrozenPerfectBinaryTree(FrozenBinaryTree):
     """Returns the height, that is, the distance from root to every leaf node"""
     # A perfect tree of height h has n = 2**(h + 1) - 1 nodes
     # So h is obtained as h = log2(n+1) - 1
-    # This can be done with either math.log2 or bit_length, which returns
-    #one more than the logarhith on powers of 2
+    # This can be done with either math.log2 or bit_length, which on
+    #powers of 2 returns one plus its logarithm in base 2
     return (len(self) + 1).bit_length() - 2
 
   @classmethod
-  def create_perfect_binary_tree(cls, height, data = None):
+  def generate_perfect_binary_tree(cls, height, data = None):
     r"""
-    Creates an instance (of FrozenPerfectBinaryTree or subclass) of given height
+    Generates an instance (of FrozenPerfectBinaryTree or subclass) of given height
     holding given data at every node.
     """
     # At the moment does not check if height is nonnegative integer
@@ -207,9 +230,9 @@ class FrozenPerfectBinaryTree(FrozenBinaryTree):
     return frozen_perfect_binary_tree
 
   @classmethod
-  def create_perfect_binary_tree_of_empty_dicts(cls, height):
+  def generate_perfect_binary_tree_of_empty_dicts(cls, height):
     """Creates a perfect binary tree holding empty dicts in every node."""
-    return create_perfect_binary_tree(cls, height, data = {})
+    return generate_perfect_binary_tree(cls, height, data = {})
 
 class FrozenPerfectBinaryTreeOfDicts(FrozenPerfectBinaryTree, FrozenBinaryTreeOfDicts):
   """A frozen perfect binary tree having dictionaries as data in every node."""
