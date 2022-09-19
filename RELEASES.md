@@ -1,5 +1,3 @@
 # RELEASES
 
-##  (in preparation)
-
-
+##  (Project in early development, no official releases)
