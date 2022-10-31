@@ -121,6 +121,9 @@ class DictionaryArgumentProcessor():
   """
   
   def __init__(dict_for_argument_processing, complete_new_arg_with_nones = False):
+    # Verify validity of dictionary on initiation
+    if not self.is_dict_valid_for_processing(dict_for_argument_processing, complete_new_arg_with_nones):
+      raise ValueError('Expected a valid dictionary for argument processing.')
     self.dict_for_argument_processing = dict_for_argument_processing
     self.complete_new_arg_with_nones = complete_new_arg_with_nones
     
@@ -165,3 +168,53 @@ class DictionaryArgumentProcessor():
         pre_new_args.append(None)
     new_args = tuple(pre_new_args)
     return (new_args, new_kwargs)
+    
+  @staticmethod
+  def is_dict_valid_for_processing(dictionary, complete_new_arg_with_nones):
+    """
+    Determines whether a given dict is valid for argument processing.
+    
+    That is, the items must satisfy the conditions specified in the class
+    docstring.
+    
+    Also, if complete_new_arg_with_nones is False, then the numerical keys
+    (if any exist) must form a complete range from 0 to another nonnegative number.
+    """
+    if not isinstance(dictionary, dict):
+      return False
+    else:
+      was_problem_detected = False
+      a_and_k = ['a', 'k']
+      max_numerical_key_detected = -1 # Works correctly with formula
+      total_numerical_keys_detected = 0
+      for (key, value) in dictionary.items():
+        if not isinstance(key, (str, int)):
+          was_problem_detected = True
+          break
+        elif not isinstance(value, tuple) or len(value) != 3:
+          was_problem_detected = True
+          break
+        elif not isinstance(value[0], str) or value[0][0].lower() in a_and_k:
+          was_problem_detected = True
+          break
+        elif not isinstance(value[2], str):
+          was_problem_detected = True
+          break
+        else:
+          # Hardest to verify is the second item of the value tuple
+          # Seize the opportunity to verify key is nonnegative if integer
+          if isinstance(key, int):
+            if key < 0 or not isinstance(value[1], int):
+              was_problem_detected = True
+              break
+            else:
+              total_numerical_keys_detected += 1
+              max_numerical_key_detected = max(max_numerical_key_detected, value[1])
+          else: # Certainly str at this point
+            if not isinstance(value[1], str):
+              was_problem_detected = True
+              break
+    if complete_new_arg_with_nones:
+      if max_numerical_key_detected != total_numerical_keys_detected - 1:
+        was_problem_detected = True
+    return not was_problem_detected
