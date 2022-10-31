@@ -31,9 +31,10 @@ class Formula():
   Object which implements a rule in which objects given as values
   of a dictionary with predetermined keys produce a new object.
   
-  The rule is supplied by a built-in python function.
+  The rule is supplied by a built-in python function (or another callable
+  which acts similarly).
   
-  The class allows for other handling operations specified in instantiation.
+  The class allows for additional handling operations specified in instantiation.
   """
   
   def __init__(self, inner_function, argument_handler = None):
@@ -63,12 +64,13 @@ class FormulaOnDictionaries():
       inner_function = None, argument_handler = None):
     if inner_formula is None:
       inner_formula = Formula(inner_function, argument_handler)
-    self.inner_formula = inner_formula
-    # Can give either the dictionary or the DictionaryArgumentProcessor
-    # If a dict is given, then complete_new_arg_with_nones will be False
+    self.inner_formula = inner_formula # This might even be None
+    # Can give either a DictionaryArgumentProcessor, or a dictionary
+    #which conforms to the requirements of DictionaryArgumentProcessor
     if isinstance(dict_for_argument_processing, DictionaryArgumentProcessor):
       self.dict_processor = dict_for_argument_processing
     elif isinstance(dict_for_argument_processing, dict):
+      # If a dict is given, then complete_new_arg_with_nones will be False
       self.dict_processor = DictionaryArgumentProcessor(
           dict_for_argument_processing = dict_for_argument_processing,
           complete_new_arg_with_nones = False)
