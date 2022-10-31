@@ -109,8 +109,16 @@ designed specifically for that).
 Due to the fact that the words "key" and "value" are used in the context
 of a Python dictionary, replace the word "value" for "data" in the context
 of the content of a node (in a tree).
+(For consistency, this should be the default in all languages.)
 
 ## ISSUE #0013 OPEN
 
 Consider renaming the project to Homemade Financial Instruments.
 (Or something else, or not rename at all.)
+
+## ISSUE #0014py OPEN
+
+Write type hints (introduced in Python 3.5 via PEP 484) for every existing
+variable/function/method.
+Do the same for variable annotations (PEP 526, Python 3.6)
+Also consider the constructions final/Final/@final (PEP 591, Python 3.8)
