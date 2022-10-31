@@ -65,13 +65,13 @@ class FormulaOnDictionaries():
       inner_formula = Formula(inner_function, argument_handler)
     self.inner_formula = inner_formula
     # Can give either the dictionary or the DictionaryArgumentProcessor
-    # If a dict is given, then complete_args_with_nones will be False
+    # If a dict is given, then complete_new_arg_with_nones will be False
     if isinstance(dict_for_argument_processing, DictionaryArgumentProcessor):
       self.dict_processor = dict_for_argument_processing
     elif isinstance(dict_for_argument_processing, dict):
       self.dict_processor = DictionaryArgumentProcessor(
           dict_for_argument_processing = dict_for_argument_processing,
-          complete_args_with_nones = False)
+          complete_new_arg_with_nones = False)
     else:
       raise TypeError('dict_for_argument_processing must be either a dict'\
           'or a DictionaryArgumentProcessor')
@@ -83,40 +83,44 @@ class FormulaOnDictionaries():
 
 class DictionaryArgumentProcessor():
   r"""
-  Transforms non-keyword and keyword arguments into new non-keyword and
-  keyword arguments using a specific dictionary given at its initiation.
+  An instance transforms a tuple and a dict into a new tuple and a new dict
+  using rules from a specific dictionary given at its initiation.
   
-  The transformation is done on a tuple and a dict which are interpreted
-  as non-keyword and keyword arguments of a function or method call.
-  This interpretation is optional.
+  The tuple and the dict can optionally be interpreted as non-keyword and
+  keyword arguments of a function or method call. This interpretation
+  motivates the names of the variables: args, kwargs, new_args, new_kwargs,
+  on some specification strings, as well as the own class name.
   
   In more detail, the attribute dict_for_argument_processing is a dict
-  whose keys are either nonnegative integers (giving rise to non-keyword
-  arguments) or strings (giving rise to keyword arguments) and whose values
-  are length three tuples. The first of these items is either 'arg' or
-  'kwarg'. The second is a nonnegative integer if the first item is 'arg',
+  whose keys are either nonnegative integers (giving rise to an item in a tuple,
+  typically interpreted as a non-keyword argument) or strings (giving rise to
+  items in a dict, typically interpreted as keyword argument) and whose values
+  are length three tuples. The first of these items is either 'arg' or 'kwarg'
+  (or any other strings whose first letter is, after lowcasing, 'a' or 'k').
+  The second is a nonnegative integer if the first item is 'arg',
   and a string otherwise. The third is always a string.
   
-  This is done so that the transform method, which receives a tuple named
+  This is done so that the transform() method, which receives a tuple named
   args and a dict named kwargs, produces a tuple named new_args and
-  a dictionary named new_kwargs. For each key in dict_for_argument_processing,
-  there will be a new_value which will be either (here value is the
-  corresponding value) args[value[1]][value[2]] if value[0] is 'arg'
-  and kwargs[value[1]][value[2]] if value[0] is 'kwargs', and this new_value
-  will either join new_args if the key is an nonnegative integer in which
-  case new_value will be new_args[key], or join new_kwargs if key is a string,
-  in which case new_value will be new_kwargs[key].
+  a dictionary named new_kwargs. A numerical key in dict_for_argument_processing
+  determines the item in the corresponding position in a tuple new_args,
+  while a string key determines the corresponding key in the dict new_kwargs.
+  The value (in the key-value pairs in dict_for_argument_processing)
+  determines the value of that item of new_args or new_kwargs: it will be
+  either args[value[1]][value[2]] if value[0] is 'arg'
+  or kwargs[value[1]][value[2]] if value[0] is 'kwarg'.
   
-  The behavior of the formation of new_tuple is determined by the Boolean
-  attribute complete_args_with_nones. In True, if the numerical keys used
+  The behavior of the formation of new_arg is determined by the Boolean
+  attribute complete_new_arg_with_nones. In True, if the numerical keys used
   to derive the items of new_args don't complete a Python range from 0
   to their maximum, then the remaining positions will be filled with None.
-  If False, an error will be raised.
+  If False, and the numerical keys don't complete a range, an error will
+  be raised.
   """
   
-  def __init__(dict_for_argument_processing, complete_args_with_nones = False):
+  def __init__(dict_for_argument_processing, complete_new_arg_with_nones = False):
     self.dict_for_argument_processing = dict_for_argument_processing
-    self.allow_incomplete_tuple = allow_incomplete_tuple
+    self.complete_new_arg_with_nones = complete_new_arg_with_nones
     
   def transform(args, kwargs):
     r"""
@@ -144,11 +148,11 @@ class DictionaryArgumentProcessor():
         dict_to_act_on[key] = new_value
       else:
         raise ValueError('Keys cannot be repeated') # Maybe move check to __init__?
-    # Make pre_pre_new_args into a list then a tuple
+    # Make pre_pre_new_args into a list then a tuple, potentially addind Nones
     max_index_in_tuple = -1 # Empty tuple
     for key in pre_pre_new_args:
       max_index_in_tuple = max(max_index_in_tuple, key)
-    if not complete_args_with_nones:
+    if not complete_new_arg_with_nones:
       if len(pre_pre_new_args) != max_index_in_tuple + 1:
         raise ValueError('Integer keys of dict must form a full range.')
     pre_new_args = []
