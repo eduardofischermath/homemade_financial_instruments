@@ -122,3 +122,13 @@ Write type hints (introduced in Python 3.5 via PEP 484) for every existing
 variable/function/method.
 Do the same for variable annotations (PEP 526, Python 3.6)
 Also consider the constructions final/Final/@final (PEP 591, Python 3.8)
+
+## ISSUE #0015py OPEN
+
+Study whether the Formulas or FormulasOnDictionaries should have arguments
+restricted to either being all keywords args or all non-keyword args
+(that is, no mixing), and do appropriate changes to address the issue
+(or non-issue, if not an issue).
+
+Also, consider using always 'Dict(s)' instead of 'Dictionary(s)' for
+shortness of variable/class/function names.

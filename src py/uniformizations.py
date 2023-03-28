@@ -31,7 +31,7 @@
 ########################################################################
 
 class Uniformization():
-  """Register and controls a multi-faceted entity."""
+  """Registers and controls a multi-faceted entity."""
   pass
   
   def get_preferred_form():

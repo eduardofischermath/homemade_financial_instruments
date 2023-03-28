@@ -407,7 +407,7 @@ class Derivative(Asset):
     self.underlying = underlying
   
 class VanillaOption(Derivative, NoCostsNoDividendsAsset):
-  """For vanilla (European or American) (put or call) options"""
+  """A vanilla (European or American) (put or call) option"""
   
   def __init__(self, underlying, expiry, struck):
     self.expiry = expiry

@@ -55,7 +55,7 @@ class FixedInterestRateWorld(World):
       interest_rate,
       is_rate_discrete_instead_of_continuous = False,
       is_rate_percentage_instead_of_absolute = False):
-    """Set (fixed) discrete and continuous interest rates in the world."""
+    """Sets (fixed) discrete and continuous interest rates in the world."""
     if is_rate_percentage_instead_of_absolute:
       interest_rate = interest_rate / 100.0 # Python-agnostic
     # Discrete interest rate is also called annualized on some sources
