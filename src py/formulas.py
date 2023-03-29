@@ -32,56 +32,64 @@ class Formula():
   of a dictionary with predetermined keys produce a new object.
   
   The rule is supplied by a built-in python function (or another callable
-  which acts similarly).
+  which acts similarly), stored as `inner_function` attribute.
   
-  The class allows for additional handling operations specified in instantiation.
+  The class allows for additional handling operations specified in
+  instantiation, via the attribute `argument_handler`. In their absence,
+  is not very much different from its inner function.
   """
   
   def __init__(self, inner_function, argument_handler = None):
     self.func = inner_function
     self.argument_handler = argument_handler
   
-  def call(self, *args, **kwargs):
+  def call(self, *posargs, **kwargs):
     """Executes the formula on given arguments, allowing argument handling."""
     if self.argument_handler:
-      args, kwargs = self.argument_handler(*args, **kwargs)
-    return self.inner_function(*args, **kwargs) # That is, __call__ of it
+      posargs, kwargs = self.argument_handler(*posargs, **kwargs)
+    return self.inner_function(*posargs, **kwargs) # That is, __call__ of it
     
 class FormulaOnDictionaries():
   r"""
   An object implementing a kind of formula/function whose action is based
-  on values of dictionaries passed as their variables/arguments.
+  on values stored on dicts.
   
-  It is done by wrapping over a regular Formula so that it will be called
-  after the correct variables/arguments are extracted from the dicts
-  given as positional or keyword arguments during the call method.
+  It is done by wrapping over a regular Formula so that, when the
+  instance's `call` method is executed, it will be called after the
+  correct variables/arguments are extracted using a DictionaryArgumentProcessor
+  from the dicts given as positional or keyword arguments.
+  
   This Formula (or alternatively its instantiation arguments) and the
   dictionary for correct extraction (or alternatively the appropriate
-  argument transforming/processing object) for are given at instantiation.
+  argument transforming/processing object) are given at instantiation.
   """
   
   def __init__(self, dict_for_argument_processing, inner_formula = None,
       inner_function = None, argument_handler = None):
+    # Formula inside the FormulaOnDictionaries may be given explicitly
+    #or implicitly, in which case it is formed by the given inner_function
+    #and argument_handler
     if inner_formula is None:
       inner_formula = Formula(inner_function, argument_handler)
     self.inner_formula = inner_formula # This might even be None
-    # Can give either a DictionaryArgumentProcessor, or a dictionary
+    # Can give either a DictionaryArgumentProcessor instance, or a dict
     #which conforms to the requirements of DictionaryArgumentProcessor
     if isinstance(dict_for_argument_processing, DictionaryArgumentProcessor):
       self.dict_processor = dict_for_argument_processing
     elif isinstance(dict_for_argument_processing, dict):
-      # If a dict is given, then complete_new_posargs_with_nones will be False
+      # It is fundamental, for the objectives of this class, to set
+      #`raise_error_if_not_all_input_items_are_dicts` to True
       self.dict_processor = DictionaryArgumentProcessor(
           dict_for_argument_processing = dict_for_argument_processing,
-          complete_new_posargs_with_nones = False)
+          raise_error_if_not_all_input_items_are_dicts = True)
     else:
       raise TypeError('dict_for_argument_processing must be either a dict'\
           'or a DictionaryArgumentProcessor')
 
-  def call(self, *args, **kwargs):
+  def call(self, *posargs, **kwargs):
     """Executes the inner formula and therefore the inner function"""
-    new_args, new_kwargs = self.dict_processor.process(args, kwargs)
-    return self.inner_formula.call(*new_args, **new_kwargs)
+    new_posargs, new_kwargs = self.dict_processor.process(posargs, kwargs)
+    return self.inner_formula.call(*new_posargs, **new_kwargs)
 
 class DictionaryArgumentProcessor():
   r"""
@@ -150,7 +158,8 @@ class DictionaryArgumentProcessor():
   to be a nonempty string.
   
   On the other hand, the option `raise_error_if_any_input_items_is_dict`,
-  does a similar thing in the opposite direction: if any such item is
+  does a similar thing in the opposite direction: `value[2]` should then
+  be None, not allowing for direct "read dict key" operations.
   """
   
   def __init__(
