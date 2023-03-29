@@ -212,7 +212,7 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     A formula is given which computes a dictionary value at a node based
     on other dictionary values at the same node.
     
-    More specifically, it uses a FormulaOnDictionaries with named
+    More specifically, it uses a FormulaOnDicts with named
     keyword dict arguments called node_dict and all_other_args.
     """
     pass
@@ -225,7 +225,7 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     based on the data of its left and right children. The formula should
     also provide a way to compute the value at the leaves.
     
-    More specifically, it uses a FormulaOnDictionaries with named
+    More specifically, it uses a FormulaOnDicts with named
     keyword dict arguments called parent_node_dict, left_child_dict,
     right_child_dict and all_other_args.
     """
@@ -239,7 +239,7 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     based on the data of its parent (and whether it is the left or right
     child node). The formula should also a way to compute the value at the root.
     
-    More specifically, it uses a FormulaOnDictionaries with named
+    More specifically, it uses a FormulaOnDicts with named
     keyword dict arguments called parent_node_dict, left_child_dict,
     right_child_dict and all_other_args. The dictionary all_other_args
     must have a key named is_it_left_instead_of_right.

@@ -379,7 +379,7 @@ class EqualUpDownBinaryTreeAsset(BinaryTreeAsset):
         'parent_value': ('kwargs', 'parent_node_dict', 'asset_value'), 
         'jump_amount': ('kwargs', 'all_other_args', 'jump_amount'),
         'is_it_left_instead_or_right': ('kwargs', '', 'is_it_left_instead_or_right')}
-    formula_on_dicts = FormulaOnDictionaries(processing_dict, inner_formula)
+    formula_on_dicts = FormulaOnDicts(processing_dict, inner_formula)
     return formula_on_dicts
     
   def build_modeling_tree(self, max_time):
