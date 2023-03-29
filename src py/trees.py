@@ -31,6 +31,10 @@ from formulas import *
 class FrozenTree():
   """A tree with frozen node structure (the nodes may have mutable data)."""
 
+  def __len__(self):
+    """Returns the length or size of the tree, that is, its number of nodes"""
+    return len(list_of_nodes)
+
   def reset_all_nodes_to_specific_data(self, data = None):
     """Changes the data of all nodes to be the specified data."""
     for node in self.list_of_nodes:
@@ -49,11 +53,21 @@ class FrozenTree():
 
 class FrozenBinaryTree(FrozenTree):
   r"""
-  A tree with frozen node structure (the nodes themselves may be mutable)
-  and such that every node has at most 2 child nodes.
+  A tree with frozen node structure (the nodes may have mutable data)
+  and such that every node has at most 2 child nodes, named left and
+  right nodes. In case there is a single one, it is specified whether
+  it is a left or right child.
+  
+  Always has as attributes `list_of_nodes` and `root`. An useful but
+  optional attribute is `dict_of_parents`.
   """
 
-  def __init__(self, list_of_nodes = None, root = None, skip_checks = False):
+  def __init__(
+      self,
+      list_of_nodes = None,
+      root = None,
+      skip_checks = False,
+      set_create_dict_of_parents_on_init = False):
     # Can be formed by either giving its root or by providing a list of all nodes
     if list_of_nodes != None:
       # Currently assumes list of nodes does form a binary tree
@@ -82,6 +96,11 @@ class FrozenBinaryTree(FrozenTree):
       self.list_of_nodes = self.static_dirty_get_list_of_nodes_from_root(self.root)
     else:
       raise ValueError('Needs either root or list of nodes to build instance')
+    # Finally, set dict_of_parents but only if requested
+    if set_create_dict_of_parents_on_init:
+      self.create_dict_of_parents(
+          set_as_attribute_instead_of_returning = True,
+          reuse_if_already_set = True)
 
   @staticmethod
   def check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = False,
@@ -92,7 +111,10 @@ class FrozenBinaryTree(FrozenTree):
     It can be set up to return True or False (if it passes or fails the test,
     respectively), or to raise an Error if fails the test and doing nothing
     if it passes."""
-    # Currently assumes list of nodes is correct for a (perfect) binary tree
+    #############
+    # WORK HERE
+    # Currently returns a default "all right" answer
+    #############
     if return_boolean_instead_of_potentially_raising_error:
       return True
     else:
@@ -124,9 +146,18 @@ class FrozenBinaryTree(FrozenTree):
     """Returns root of tree."""
     return self.root
     
-  def get_parent_of_node_in_tree(self, node):
-    """Returns parent of node, or None if root."""
-    if hasattr(self, dict_of_parents):
+  def get_parent_of_node_in_tree(self, node, set_dict_of_parents_if_inexistent = False):
+    r"""
+    Returns parent of node, or None if root.
+    
+    If set_dict_of_parents_if_inexistent, will set the `dict_of_parents`
+    attribute for future consultations. This might be advantageous as
+    establishing the parents for all nodes should cost about only double
+    of the time needed for a single node."""
+    if set_dict_of_parents_if_inexistent or hasattr(self, dict_of_parents):
+      self.create_dict_of_parents(
+          set_as_attribute_instead_of_returning = True,
+          reuse_if_already_set = True)
       return sef.dict_of_parents[node]
     else:
       putative_parent = None
@@ -136,19 +167,23 @@ class FrozenBinaryTree(FrozenTree):
           break
       return putative_parent
 
-  def create_dict_of_parents(self, set_as_attribute_instead_of_returning = False,
-      ignore_if_already_set = False):
+  def create_dict_of_parents(
+      self,
+      set_as_attribute_instead_of_returning = False,
+      reuse_if_already_set = False):
     r"""
-    Creates a dictionary associating to each node its parent (or None for the root).
+    Creates a dictionary associating to each node its parent (or None
+    for the root).
     
     Has the option of either returning the dictionary or setting it as
-    an attribute dict_of_parents of the instance (and returning None).
+    an attribute `dict_of_parents` of the instance (and returning None).
     
-    Has the option to consider or ignore a dict_of_parents previously set
+    Has the option to reuse or ignore a `dict_of_parents` previously set
     as attribute. If not ignored and the attribute is set, then the method
-    simply uses it.
+    simply uses it. Otherwise, it creates the dict from scratch, setting
+    it as an attribute or returning it.
     """
-    if ignore_if_already_set and hasattr(self, dict_of_parents):
+    if reuse_if_already_set and hasattr(self, dict_of_parents):
       dict_of_parents = self.dict_of_parents
     else:
       dict_of_parents = {}
@@ -172,12 +207,14 @@ class FrozenBinaryTree(FrozenTree):
     starting from the initial node.
     
     Has option to allow for staying in place if a 'p', 'l' or 'r' instruction
-    is provided which would lead to no node.
+    is provided which would lead to no node. This is potentially dangerous
+    but is left as an option.
     """
     # Since this might be called multiple times it might be useful to set
     #all parents at once instead of searching every time
-    create_dict_of_parents(self, set_as_attribute_instead_of_returning = True,
-        ignore_if_already_set = False)
+    self.create_dict_of_parents(
+        set_as_attribute_instead_of_returning = True,
+        reuse_if_already_set = True)
     current_node = node
     for char in string:
       if char.lower() == 'p':
@@ -198,7 +235,9 @@ class FrozenBinaryTree(FrozenTree):
         if raise_error_if_navigation_leads_to_none:
           raise ValueError('Cannot follow path for navigation inside tree.')
         else:
-          pass # current_node stays as it is for this loop iteration
+          # current_node stays as it is for this loop iteration,
+          #exactly as if that char instruction has been simply ignored
+          pass
     return current_node
 
 class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
@@ -257,10 +296,6 @@ class FrozenPerfectBinaryTree(FrozenBinaryTree):
           return_boolean_instead_of_potentially_raising_error = True):
         raise ValueError('Given nodes cannot form a perfect binary tree.')
     super().__init__(list_of_nodes = list_of_nodes, root = root, skip_checks = True)
-
-  def __len__(self):
-    """Returns the length or size of the tree, that is, its number of nodes"""
-    return len(list_of_nodes)
     
   def get_height(self):
     """Returns the height, that is, the distance from root to every leaf node"""
@@ -308,9 +343,21 @@ class FrozenPerfectBinaryTreeOfDicts(FrozenPerfectBinaryTree, FrozenBinaryTreeOf
   pass
   
 class FrozenBinaryTreeNode():
-  """A node in a FrozenBinaryTree"""
+  r"""
+  A node in a FrozenBinaryTree.
+  
+  Has information on its left and right child: None if each doesn't exist,
+  and the FrozenBinaryTreeNode itself if any does. Also contains data.
+  
+  Following the typical convention for trees and nodes, even if the node
+  object has a parent, it is not stored with the object itself. In the
+  case of a FrozenBinaryTree, the parentage information is stored in the
+  tree object.
+  """
   
   def __init__(self, data, left = None, right = None):
     self.data = data
     self.left = left
     self.right = right
+    # Note: typically there is no information about the parent of a node
+    #in the node itself. This convention is maintained here
