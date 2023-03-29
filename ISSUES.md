@@ -135,3 +135,12 @@ DictionaryArgumentProcessor).
 Allow for DictArgumentProcessor to explicitly take dict items
 (in tuple and dict input) and also to avoid them. This way the purpose
 of an instance becomes clearer specially when used with FormulaOnDicts.
+
+## ISSUE #0016 OPEN
+
+Update copyright to current year 2023.
+
+## ISSUE #0017 OPEN
+
+Write method check_consistency_of_list_of_nodes for class FrozenBinaryTree
+(and possibly also adaptable for other related classes).
