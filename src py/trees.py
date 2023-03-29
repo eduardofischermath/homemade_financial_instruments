@@ -249,7 +249,8 @@ class FrozenBinaryTree(FrozenTree):
 class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
   """A frozen binary tree having dictionaries as data in all nodes."""
 
-  def compute_formula_at_nodes(self, output_key, formula_on_dicts, all_other_args):
+  def compute_formula_at_nodes(self, output_key, formula_on_dicts, all_other_args,
+      restrict_computation_to_root = False, restrict_computation_to_leaves = False):
     r"""
     Uses a formula to create or update a value for a dictionary key which
     will be present in a dictionary in every node of the tree.
@@ -260,8 +261,20 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     More specifically, it uses a FormulaOnDicts with named keyword dict
     arguments called `very_node_dict` (which receives the `data` attribute of
     the node being altered, necessarily a dict) and `all_other_args`.
+    
+    Has an option to only work at the root of the tree, or alternatively
+    work only at the leaves, leaving the rest of the tree intact.
     """
-    for node in self.list_of_nodes:
+    if restrict_computation_to_root and restrict_computation_to_leaves:
+      raise ValueError('Cannot restrict simultaneously to root and to leaves')
+    elif restrict_computation_to_root:
+      nodes_to_act_on = [self.get_root()]
+    elif restrict_computation_to_leaves:
+      is_leaf = lambda x: x.left is None and x.right is None
+      nodes_to_act_on = filter(is_leaf, self.list_of_nodes)
+    else:
+      nodes_to_act = self.list_of_nodes
+    for node in nodes_to_act_on:
       kwargs = {
           'very_node_dict': node.data,
           'all_other_args': all_other_args}
@@ -274,8 +287,10 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     each node. It changes the instance itself, returning None.
     
     A formula is given which computes the value of that dict key at that node
-    based on the data of its left and right children. The formula should
-    also provide a way to compute the value at the leaves.
+    based on the data of its left and right children.
+    
+    The formula does not need to provide a way to compute the value at
+    the leaves, but it is assumed they are computed in another way.
     
     More specifically, it uses a FormulaOnDicts with named
     keyword dict arguments called `very_node_dict`, `left_child_dict`,
@@ -291,20 +306,53 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     
     A formula is given which computes the value of that dict key at that node
     based on the data of its parent (and whether it is the left or right
-    child node). The formula should also a way to compute the value at the root.
+    child node).
+    
+    The formula does not need to provide a way to compute the value at
+    the root, but it is assumed it is already computed in another way.
     
     More specifically, it uses a FormulaOnDicts with named keyword dict
-    arguments called `very_node_dict`, `parent_dict` and `all_other_args`.
-    The dict all_other_args must have an added key from `almost_all_other_args`
-    named 'is_it_left_instead_of_right', telling whether the node in
-    question, whose `output_key` is being created or altered, is the left
-    or the right child of its parent.
+    arguments called `parent_dict`, `relevant_child_dict`, and `all_other_args`.
+    
+    The dict `all_other_args` must have an added keys compared to
+    `almost_all_other_args` named 'is_it_left_instead_of_right', which
+    tells whether the node in question, whose `output_key` value is being
+    created or altered, is the left or the right child of its parent,
+    as well as an added key `is_it_root` which is true only on the root.
     """
     if 'is_it_left_instead_of_right' in almost_all_other_args:
       raise ValueError('Left and right info cannot be given early')
-    ###########
-    # WORK HERE
-    ###########
+    def depth_first_search(
+        self,
+        current_node,
+        formula_on_dicts,
+        almost_all_other_args):
+      # Each iteration produces the correct `output_key` corresponding
+      #value for left and right node of `current_node`
+      list_of_children_and_boolean = [
+          (current_node.left, True),
+          (current_node.right, False)]
+      for child_node, is_it_left_instead_of_right in list_of_children_and_boolean:
+        if child_node is not None:
+          all_other_args = {'is_it_left_instead_of_right': is_it_left_instead_of_right}
+          all_other_args.update(almost_all_other_args)
+          new_output_value = formula_on_dicts(
+              parent_dict = current_node.data,
+              relevant_child_dict = child_node.data,
+              all_other_args = all_other_args)
+          child_node[output_key] = new_output_value
+          depth_first_search(
+              self,
+              child_node,
+              formula_on_dicts,
+              almost_all_other_args)
+      return None # Alters each node, returning None
+    current_node = self.get_root()
+    depth_first_search(
+        self,
+        current_node,
+        formula_on_dicts,
+        almost_all_other_args)
 
 class FrozenPerfectBinaryTree(FrozenBinaryTree):
   """A FrozenBinaryTree of constant height [distance from leafs to root]."""
