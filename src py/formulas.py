@@ -49,14 +49,14 @@ class Formula():
       posargs, kwargs = self.argument_handler(*posargs, **kwargs)
     return self.inner_function(*posargs, **kwargs) # That is, __call__ of it
     
-class FormulaOnDictionaries():
+class FormulaOnDicts():
   r"""
   An object implementing a kind of formula/function whose action is based
   on values stored on dicts.
   
   It is done by wrapping over a regular Formula so that, when the
   instance's `call` method is executed, it will be called after the
-  correct variables/arguments are extracted using a DictionaryArgumentProcessor
+  correct variables/arguments are extracted using a DictArgumentProcessor
   from the dicts given as positional or keyword arguments.
   
   This Formula (or alternatively its instantiation arguments) and the
@@ -66,32 +66,32 @@ class FormulaOnDictionaries():
   
   def __init__(self, dict_for_argument_processing, inner_formula = None,
       inner_function = None, argument_handler = None):
-    # Formula inside the FormulaOnDictionaries may be given explicitly
+    # Formula inside the FormulaOnDicts may be given explicitly
     #or implicitly, in which case it is formed by the given inner_function
     #and argument_handler
     if inner_formula is None:
       inner_formula = Formula(inner_function, argument_handler)
     self.inner_formula = inner_formula # This might even be None
-    # Can give either a DictionaryArgumentProcessor instance, or a dict
-    #which conforms to the requirements of DictionaryArgumentProcessor
-    if isinstance(dict_for_argument_processing, DictionaryArgumentProcessor):
+    # Can give either a DictArgumentProcessor instance, or a dict
+    #which conforms to the requirements of DictArgumentProcessor
+    if isinstance(dict_for_argument_processing, DictArgumentProcessor):
       self.dict_processor = dict_for_argument_processing
     elif isinstance(dict_for_argument_processing, dict):
       # It is fundamental, for the objectives of this class, to set
       #`raise_error_if_not_all_input_items_are_dicts` to True
-      self.dict_processor = DictionaryArgumentProcessor(
+      self.dict_processor = DictArgumentProcessor(
           dict_for_argument_processing = dict_for_argument_processing,
           raise_error_if_not_all_input_items_are_dicts = True)
     else:
       raise TypeError('dict_for_argument_processing must be either a dict'\
-          'or a DictionaryArgumentProcessor')
+          'or a DictArgumentProcessor')
 
   def call(self, *posargs, **kwargs):
     """Executes the inner formula and therefore the inner function"""
     new_posargs, new_kwargs = self.dict_processor.process(posargs, kwargs)
     return self.inner_formula.call(*new_posargs, **new_kwargs)
 
-class DictionaryArgumentProcessor():
+class DictArgumentProcessor():
   r"""
   An instance with a method which transforms a tuple and a dict into a
   new tuple and a new dict using rules from a specific dictionary,
