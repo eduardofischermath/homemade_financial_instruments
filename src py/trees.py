@@ -22,7 +22,7 @@
 
 ########################################################################
 
-# For tree structures, focusing on binary (and may perfect) trees
+# For tree structures, focusing on binary (and some perfect) trees
 
 ########################################################################
 
@@ -60,6 +60,9 @@ class FrozenBinaryTree(FrozenTree):
   
   Always has as attributes `list_of_nodes` and `root`. An useful but
   optional attribute is `dict_of_parents`.
+  
+  Can be initialized with a (nonempty) full list of nodes or with a
+  single node representing the root.
   """
 
   def __init__(
@@ -69,7 +72,7 @@ class FrozenBinaryTree(FrozenTree):
       skip_checks = False,
       set_create_dict_of_parents_on_init = False):
     # Can be formed by either giving its root or by providing a list of all nodes
-    if list_of_nodes != None:
+    if list_of_nodes:
       # Currently assumes list of nodes does form a binary tree
       if not skip_checks:
         if not self.check_consistency_of_list_of_nodes(
@@ -95,7 +98,7 @@ class FrozenBinaryTree(FrozenTree):
       self.root = root
       self.list_of_nodes = self.static_dirty_get_list_of_nodes_from_root(self.root)
     else:
-      raise ValueError('Needs either root or list of nodes to build instance')
+      raise ValueError('Needs either root or nonempty list of nodes to build instance')
     # Finally, set dict_of_parents but only if requested
     if set_create_dict_of_parents_on_init:
       self.create_dict_of_parents(
@@ -103,7 +106,10 @@ class FrozenBinaryTree(FrozenTree):
           reuse_if_already_set = True)
 
   @staticmethod
-  def check_consistency_of_list_of_nodes(list_of_nodes, require_perfectness = False,
+  def check_consistency_of_list_of_nodes(
+      list_of_nodes,
+      require_perfectness = False,
+      require_dicts_as_data_of_nodes = False,
       return_boolean_instead_of_potentially_raising_error = False):
     r"""
     Checks if nodes form a binary tree (or a perfect binary tree).
@@ -243,7 +249,7 @@ class FrozenBinaryTree(FrozenTree):
 class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
   """A frozen binary tree having dictionaries as data in all nodes."""
 
-  def compute_formula_at_nodes(self, output_key, formula_on_dicts):
+  def compute_formula_at_nodes(self, output_key, formula_on_dicts, all_other_args):
     r"""
     Uses a formula to create or update a value for a dictionary key which
     will be present in a dictionary in every node of the tree.
@@ -251,39 +257,54 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
     A formula is given which computes a dictionary value at a node based
     on other dictionary values at the same node.
     
-    More specifically, it uses a FormulaOnDicts with named
-    keyword dict arguments called node_dict and all_other_args.
+    More specifically, it uses a FormulaOnDicts with named keyword dict
+    arguments called `very_node_dict` (which receives the `data` attribute of
+    the node being altered, necessarily a dict) and `all_other_args`.
     """
-    pass
+    for node in self.list_of_nodes:
+      kwargs = {
+          'very_node_dict': node.data,
+          'all_other_args': all_other_args}
+      new_value_for_output_key = formula_on_dicts.call(**kwargs)
+      node.data[output_key] = new_value_for_output_key
 
-  def propagate_formula_up(self, output_key, formula_on_dicts):
+  def propagate_formula_up(self, output_key, formula_on_dicts, all_other_args):
     r"""
-    Uses a formula to create or update a value for a dictionary key at each node.
+    Uses a formula to create or update a value for a dictionary key at
+    each node. It changes the instance itself, returning None.
     
     A formula is given which computes the value of that dict key at that node
     based on the data of its left and right children. The formula should
     also provide a way to compute the value at the leaves.
     
     More specifically, it uses a FormulaOnDicts with named
-    keyword dict arguments called parent_node_dict, left_child_dict,
-    right_child_dict and all_other_args.
+    keyword dict arguments called `very_node_dict`, `left_child_dict`,
+    `right_child_dict` and `all_other_args`. The result of the formula
+    will alter the output key of the very node.
     """
     pass
     
-  def propagate_formula_down(self, output_key, formula_on_dicts):
+  def propagate_formula_down(self, output_key, formula_on_dicts, almost_all_other_args):
     r"""
-    Uses a formula to create or update a value for a dictionary key at each node.
+    Uses a formula to create or update a value for a dictionary key at
+    each node. It changes the instance itself, returning None.
     
     A formula is given which computes the value of that dict key at that node
     based on the data of its parent (and whether it is the left or right
     child node). The formula should also a way to compute the value at the root.
     
-    More specifically, it uses a FormulaOnDicts with named
-    keyword dict arguments called parent_node_dict, left_child_dict,
-    right_child_dict and all_other_args. The dictionary all_other_args
-    must have a key named is_it_left_instead_of_right.
+    More specifically, it uses a FormulaOnDicts with named keyword dict
+    arguments called `very_node_dict`, `parent_dict` and `all_other_args`.
+    The dict all_other_args must have an added key from `almost_all_other_args`
+    named 'is_it_left_instead_of_right', telling whether the node in
+    question, whose `output_key` is being created or altered, is the left
+    or the right child of its parent.
     """
-    pass
+    if 'is_it_left_instead_of_right' in almost_all_other_args:
+      raise ValueError('Left and right info cannot be given early')
+    ###########
+    # WORK HERE
+    ###########
 
 class FrozenPerfectBinaryTree(FrozenBinaryTree):
   """A FrozenBinaryTree of constant height [distance from leafs to root]."""
