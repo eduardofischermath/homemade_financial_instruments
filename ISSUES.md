@@ -136,7 +136,7 @@ Allow for DictArgumentProcessor to explicitly take dict items
 (in tuple and dict input) and also to avoid them. This way the purpose
 of an instance becomes clearer specially when used with FormulaOnDicts.
 
-## ISSUE #0016 OPEN
+## ISSUE #0016 COMPLETE
 
 Update copyright to current year 2023.
 

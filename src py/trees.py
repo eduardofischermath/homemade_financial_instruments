@@ -9,7 +9,7 @@
 # For more information on bugs and planned features, see ISSUES.md
 # For more information on versioning, see RELEASES.md
 
-# Copyright (C) 2022 Eduardo Fischer
+# Copyright (C) 2023 Eduardo Fischer
 
 # This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU Affero General Public License version 3
