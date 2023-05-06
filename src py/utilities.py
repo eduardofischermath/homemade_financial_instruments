@@ -68,3 +68,32 @@ class StringManagement():
     """
     trimmed_string = self.trim_to_single_line_string(string)
     return self.center_string(trimmed_string, length, allow_longer)
+    
+  def print_dict_into_lines(self, dictionary, keys_to_print = None,
+      also_print_keys = False, return_as_string = False):
+    r"""
+    Given a dictionary an a list of keys_to_print, produces a list of
+    strings for the values corresponding to the keys.
+
+    If keys_to_print is None, it will take all dict keys in alphabetical
+    order.
+    
+    If also_print_keys is True, the resulting string will be
+    'str(key):str(value)'. Otherwise, it is simply str(value)
+    
+    If return_as_string is True, it instead performs a joint of the lines
+    into a single string with separator \n.
+    """
+    pass
+        
+        
+  def print_dict_into_lines_then_trim_and_center(self, dictionary, 
+      length, keys_to_print = None, also_print_keys = False):
+    r"""
+    Print some values of a dict, trimming and centering so that it
+    results in a box of characters.
+    
+    Methods print_dict_into_lines, trim_to_single_line_string and
+    center_string are applied sequentially.
+    """
+    pass
