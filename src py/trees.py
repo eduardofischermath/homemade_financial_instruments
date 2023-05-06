@@ -245,6 +245,43 @@ class FrozenBinaryTree(FrozenTree):
           #exactly as if that char instruction has been simply ignored
           pass
     return current_node
+    
+  def print_tree_in_lines(self, box_length, box_heigh, horizontal_space,
+      vertical_space):
+    r"""
+    Prints the binary tree in lines, such that the root is at the top,
+    and each left and right child of a node are positioned below that
+    node (at the left and at the right, respectively).
+    
+    Each node will be printed to a "box of characters", taking
+    box_length and box_height as arguments for length and height, with
+    an appropriate whitespace.
+    
+    The space between two neighbor leaf nodes (i. e. left and right
+    child of a certain node) is specified by an argument,
+    horizontal_space. It must be a positive integer.
+    
+    The distance between two lines is also controlled by an argument,
+    vertical_space. It must be a positive integer.
+    
+    The box length is always an integer. If it is a positive value,
+    the box of characters will have that length horizontally.
+    If it is 0, it will find the maximum length among all possible boxes.
+    A negative value raises an error.
+    
+    The box height may be given as a positive integer, case in which
+    the data in the node will be printed in that number of lines (with
+    appropriate whitespace of course). It can also be given as a list,
+    case in which the height is the length of the list, and the value
+    for each item as key in that node's data will be printed. That is,
+    each item is looked up using "node.data[item]", what is specially
+    fitting for a FrozenBinaryTreeOfDicts. Any other value raises an error.
+    """
+    #############
+    # WORK HERE
+    #############
+    pass
+    
 
 class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
   """A frozen binary tree having dictionaries as data in all nodes."""
