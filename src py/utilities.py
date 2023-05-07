@@ -27,9 +27,15 @@
 
 ########################################################################
 
-class StringManagement():
+class StringBoxManagement():
   r"""
-  Method related to general management of strings.
+  Method related to general management of string boxes.
+  
+  A string box, or character box, is understood as a rectangle of chars,
+  typically written as a list of lines of chars with same length, or
+  the same chars but with the newline character.
+  
+  This class handles such constructions and also some adjacent concepts.
   """
   
   def center_string(self, string, length, allow_longer = False):
@@ -103,7 +109,7 @@ class StringManagement():
       return '\n'.join(list_of_lines)
     else:
       return list_of_lines
-        
+
   def print_dict_into_lines_then_trim_and_center(self, dictionary, 
       length, keys_to_print = None, also_print_keys = False,
       return_as_string = False, allow_longer = False):
@@ -128,10 +134,13 @@ class StringManagement():
     else:
       return trimmed_lines
       
-  def print_dict_into_box(self, dictionary, keys_to_print = None,
+  def print_dict_into_string_box(self, dictionary, keys_to_print = None,
       also_print_keys = False, return_as_string = False)
     r"""
-    Produces smallest character box fitting values from a dict.
+    Produces smallest string box fitting values from a dict.
+    
+    This is equivalent to calling print_dict_into_lines_then_trim_and_center
+    with the maximum length.
     """
     lines = self.print_dict_into_lines(
         dictionary = dictionary,
