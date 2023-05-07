@@ -152,7 +152,7 @@ tests can be written for other tree methods and their correctness can
 be verified by a naked human eye.
 Alternatively, use a ready-made tree library for printing.
 
-## ISSUE #0019py OPEN
+## ISSUE #0019py ONGOING
 
-Create structure for testing functionalities of the Python code. Perhaps
-unittest.
+Create structure for unit testing functionalities of the Python code.
+Perhaps unittest.
