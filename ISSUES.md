@@ -145,9 +145,14 @@ Update copyright to current year 2023.
 Write method check_consistency_of_list_of_nodes for class FrozenBinaryTree
 (and possibly also adaptable for other related classes).
 
-## ISSUE #0018py OPEN
+## ISSUE #0018py ONGOING
 
 Write method for nicely printing a tree to the screen, so that useful
 tests can be written for other tree methods and their correctness can
 be verified by a naked human eye.
 Alternatively, use a ready-made tree library for printing.
+
+## ISSUE #0019py OPEN
+
+Create structure for testing functionalities of the Python code. Perhaps
+unittest.
