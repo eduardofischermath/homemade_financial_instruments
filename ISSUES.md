@@ -8,16 +8,19 @@ At this moment, we prefer to use a ISSUES file.)
 Possible values for status: OPEN, COMPLETE, IGNORED, ONGOING.
 
 Issues are uniquely numbered from 0001 through 9999. In case an issue is
-specific to one or some of the programming languages then it might be added
-to the number for quicker identification.
+specific to one or some of the programming languages then that info might
+be added to the number for quicker identification.
 
 ## ISSUE #0001 ONGOING
 
-Decide versioning/git management/project management structure.
+Have versioning/git management/project management structure.
 
-Git versioning is single-branch currently as the current focus is to write
-code with a short iteration time. When project grows in complexity
-it is likely issues/tickets/todos will be used in project management.
+Git versioning is mostly single-branch (named master) as the current focus
+is to write code with a short iteration time. Each issue gets a branch for
+development, often merged into master branch. As the program develops
+further, versioning will likely be on branches named releaseX.Y
+containing the vX.Y.Z-tagged commits/versions (X, Y, Z are numbers) which
+are the "official releases".
 
 ## ISSUE #0002 ONGOING
 
