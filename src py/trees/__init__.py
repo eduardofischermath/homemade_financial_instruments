@@ -22,15 +22,8 @@
 
 ########################################################################
 
-# Bring all subpackages (except testing) to the scope
-# Order has to be correct for the dependencies
+# Bring all classes to the subpackage scope, essentially merging the files
+from .trees import *
 
-from . import utilities
-from . import uniformizations
-from . import formulas
-from . import trees
-from . import worlds
-from . import assets
-from . import solutions_of_exercises
-from . import demos
+########################################################################
 

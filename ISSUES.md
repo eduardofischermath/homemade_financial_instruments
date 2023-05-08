@@ -2,8 +2,8 @@
 
 Use this file to list and control issues/features/to-dos
 
-(At this moment, this repository is mirrored on GitHub, which has its own project management tools.
-At this moment, we prefer to use a ISSUES file.)
+(At this moment, this repository is mirrored on GitHub, which has its own
+project management tools. At this moment, we prefer to use a ISSUES file.)
 
 Possible values for status: OPEN, COMPLETE, IGNORED, ONGOING.
 
@@ -46,9 +46,13 @@ The way it is done: the large Python project/package has many subpackages.
 Each subpackage currently has a single file with multiple classes
 (with the exception of the testing subpackage, which has multiple files),
 and for each subpackage, the classes within the corresponding files are
-brought (via importing) to the top-level of the subpackage. The large
-Python package, on the other hand, will have (via importing) all
-subpackages at the top-level (with the exception of the testing subpackage).
+brought (via importing) to the top-level of the subpackage via:
+"from .subpackage import * "
+
+The large Python package, on the other hand, will have (via importing) all
+subpackages at the top-level (with the exception of the testing subpackage)
+using:
+"from . import subpackage"
 
 As soon as the project has a more definitive name and procedures for
 installing (such pip installation via setuptools) are in place,
@@ -57,9 +61,9 @@ importing within individual files should be done as following:
 
 For an user importing the package in an interactive session or in
 a file of another project, a class can be brought to the namespace with:
-"from project import Class"
-while testing subpackage requires a more specific import statement:
 "from project.subpackage import Class"
+and a subpackage (except testing subpackage) can be imported via
+"from project import subpackage"
 
 ## ISSUE #0004py OPEN
 
