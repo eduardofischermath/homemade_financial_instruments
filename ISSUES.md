@@ -36,11 +36,30 @@ classes for Assets, Worlds and Unifications, plus subclasses, always
 trying to write code in a functional and object-oriented paradigm. There
 is a demo file, with interactive prompts, and unavoidably some is imperative.
 
-## ISSUE #0003py OPEN
+## ISSUE #0003py ONGOING
 
-For Python, improve package/subpackage/modules structure and importing
+For Python, improve package/subpackage/modules/folders structure and importing
 to avoid any possible circularities and at the same time avoid excessively
 long names which might hinder development.
+
+The way it is done: the large Python project/package has many subpackages.
+Each subpackage currently has a single file with multiple classes
+(with the exception of the testing subpackage, which has multiple files),
+and for each subpackage, the classes within the corresponding files are
+brought (via importing) to the top-level of the subpackage. The large
+Python package, on the other hand, will have (via importing) all
+subpackages at the top-level (with the exception of the testing subpackage).
+
+As soon as the project has a more definitive name and procedures for
+installing (such pip installation via setuptools) are in place,
+importing within individual files should be done as following:
+"from project.subpackage import Class"
+
+For an user importing the package in an interactive session or in
+a file of another project, a class can be brought to the namespace with:
+"from project import Class"
+while testing subpackage requires a more specific import statement:
+"from project.subpackage import Class"
 
 ## ISSUE #0004py OPEN
 
