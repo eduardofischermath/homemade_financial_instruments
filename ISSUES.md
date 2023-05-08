@@ -182,3 +182,10 @@ Alternatively, use a ready-made tree library for printing.
 
 Create structure for unit testing functionalities of the Python code.
 Perhaps unittest.
+
+## ISSUE #0020py ONGOING
+
+In support of an in-house solution for ISSUE #0018py, build a class for
+dealing with box of characters (currently called string boxes, meaning
+a list of strings of same size which are supposed to be displayed in a pile
+forming a rectangle of chars).
