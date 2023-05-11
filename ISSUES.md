@@ -141,10 +141,12 @@ of a Python dictionary, replace the word "value" for "data" in the context
 of the content of a node (in a tree).
 (For consistency, this should be the default in all languages.)
 
-## ISSUE #0013 OPEN
+## ISSUE #0013 COMPLETE
 
-Consider renaming the project to Homemade Financial Instruments.
-(Or something else, or not rename at all.)
+Rename the project to Homemade Financial Instruments.
+It could be called "homemade_financial_instruments" as a project. For
+Python's pip it should be "homemadefinancialinstruments" given how
+finicky pip is with underlines.
 
 ## ISSUE #0014py OPEN
 
