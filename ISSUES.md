@@ -44,14 +44,13 @@ long names which might hinder development.
 
 The way it is done: the large Python project/package has many subpackages.
 Each subpackage currently has a single file with multiple classes
-(with the exception of the testing subpackage, which has multiple files),
+(noting that testing is not a subpackage, but outside the large package),
 and for each subpackage, the classes within the corresponding files are
 brought (via importing) to the top level of the subpackage via:
 "from . import * "
 
 The large Python package, on the other hand, will have (via importing) all
-subpackages at the top-level (with the exception of the testing subpackage)
-by doing relative imports on its initialization file with:
+subpackages at the top-level by doing relative imports on its init file with:
 "from . import subpackage"
 If the large package is imported in a module or in interactive session
 using a simple "import project" statement, then any Class (except for
@@ -195,7 +194,7 @@ Alternatively, use a ready-made tree library for printing.
 ## ISSUE #0019py ONGOING
 
 Create structure for unit testing functionalities of the Python code.
-Perhaps unittest.
+It will be a folder outside the folder of the overall package.
 
 ## ISSUE #0020py ONGOING
 
