@@ -30,8 +30,8 @@
 
 ########################################################################
 
-from worlds import *
-from formulas import *
+from ..formulas import *
+from ..worlds import *
 
 class Asset():
   r"""

@@ -28,11 +28,11 @@
 
 ########################################################################
 
-# Not the best importing mechanisms but fine for the time being
 from sys import version_info as sys_version_info
-from trees import *
-from worlds import *
-from assets import *
+
+from ..trees import *
+from ..worlds import *
+from ..assets import *
 
 # So in this file the input works well from both Python 2 and Python 3
 if sys_version_info.major == 2:

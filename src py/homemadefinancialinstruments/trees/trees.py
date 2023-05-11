@@ -26,7 +26,8 @@
 
 ########################################################################
 
-from formulas import *
+from ..utilities import *
+from ..formulas import *
 
 class FrozenTree():
   """A tree with frozen node structure (the nodes may have mutable data)."""

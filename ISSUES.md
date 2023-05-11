@@ -36,7 +36,7 @@ classes for Assets, Worlds and Unifications, plus subclasses, always
 trying to write code in a functional and object-oriented paradigm. There
 is a demo file, with interactive prompts, and unavoidably some is imperative.
 
-## ISSUE #0003py ONGOING
+## ISSUE #0003py COMPLETE
 
 For Python, improve package/subpackage/modules/folders structure and importing
 to avoid any possible circularities and at the same time avoid excessively
@@ -61,8 +61,9 @@ As soon as the project has a more definitive name and preferably procedures
 for installing (such pip installation via setuptools) are in place
 (after being pip-installed, it can be imported independently of where
 a module is being run from or where a interactive session was launched from)
-importing within individual files should be done as following:
+importing within individual files should be done as one of the following:
 "from ..subpackage import Class"
+"from ..subpackage import * "
 (using those relative imports helps keeps the subpackages more or less
 independent of the large package)
 

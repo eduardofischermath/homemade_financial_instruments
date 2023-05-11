@@ -26,7 +26,7 @@
 
 ########################################################################
 
-from trees import *
+from ..trees import *
 
 class World():
   """Holds conditions and properties of the world."""
