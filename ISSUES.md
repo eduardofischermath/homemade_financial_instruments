@@ -65,6 +65,10 @@ a file of another project, a class can be brought to the namespace with:
 and a subpackage (except testing subpackage) can be imported via
 "from project import subpackage"
 
+This (importing on init files) might be considered a "hack" or not.
+Nonetheless, it is the current way to address importing, subpackaging
+and scopes/namespaces.
+
 ## ISSUE #0004py OPEN
 
 Add argument default_if_failed_conversion to input capturing/purifying,
