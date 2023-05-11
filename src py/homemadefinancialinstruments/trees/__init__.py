@@ -23,7 +23,7 @@
 ########################################################################
 
 # Bring all classes to the subpackage scope, essentially merging the files
-from .testing import *
+from homemadefinancialinstruments.trees import *
 
 ########################################################################
 

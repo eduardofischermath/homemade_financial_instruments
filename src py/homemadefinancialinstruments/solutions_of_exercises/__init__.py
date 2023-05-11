@@ -23,7 +23,7 @@
 ########################################################################
 
 # Bring all classes to the subpackage scope, essentially merging the files
-from .formulas import *
+from homemadefinancialinstruments..solutions_of_exercises import *
 
 ########################################################################
 

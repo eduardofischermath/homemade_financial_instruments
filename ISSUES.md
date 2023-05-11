@@ -58,6 +58,7 @@ As soon as the project has a more definitive name and procedures for
 installing (such pip installation via setuptools) are in place,
 importing within individual files should be done as following:
 "from project.subpackage import Class"
+(better than using relative imports)
 
 For an user importing the package in an interactive session or in
 a file of another project, a class can be brought to the namespace with:
