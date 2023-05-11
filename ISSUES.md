@@ -46,19 +46,25 @@ The way it is done: the large Python project/package has many subpackages.
 Each subpackage currently has a single file with multiple classes
 (with the exception of the testing subpackage, which has multiple files),
 and for each subpackage, the classes within the corresponding files are
-brought (via importing) to the top-level of the subpackage via:
-"from .subpackage import * "
+brought (via importing) to the top level of the subpackage via:
+"from . import * "
 
 The large Python package, on the other hand, will have (via importing) all
 subpackages at the top-level (with the exception of the testing subpackage)
-using:
+by doing relative imports on its initialization file with:
 "from . import subpackage"
+If the large package is imported in a module or in interactive session
+using a simple "import project" statement, then any Class (except for
+testing) is available via project.subpackage.Class, and same for functions
 
-As soon as the project has a more definitive name and procedures for
-installing (such pip installation via setuptools) are in place,
+As soon as the project has a more definitive name and preferably procedures
+for installing (such pip installation via setuptools) are in place
+(after being pip-installed, it can be imported independently of where
+a module is being run from or where a interactive session was launched from)
 importing within individual files should be done as following:
-"from project.subpackage import Class"
-(better than using relative imports)
+"from ..subpackage import Class"
+(using those relative imports helps keeps the subpackages more or less
+independent of the large package)
 
 For an user importing the package in an interactive session or in
 a file of another project, a class can be brought to the namespace with:
