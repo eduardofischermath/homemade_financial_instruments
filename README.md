@@ -1,4 +1,4 @@
-# financial_instruments
+# homemade_financial_instruments
 
 Implements financial instruments such as exotic derivatives and solutions
 for pricing as well as for hedging.

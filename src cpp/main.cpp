@@ -3,7 +3,7 @@
 # DOCUMENTATION / README
 ########################################################################
 
-File belonging to software/library/package "financial_instruments"
+File belonging to software package "homemade_financial_instruments"
 Implements financial instruments and solutions for pricing and hedging.
 
 For more information on functionality, see README.md
