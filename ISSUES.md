@@ -234,3 +234,18 @@ An horizontal example with one canvas, two boxes and one line would be:
  -----       -----
 |box 1|-----|box 2|
  -----       -----
+ 
+## ISSUE #0021py OPEN
+
+Consider descriptions of a binary tree given by a dictionary whose keys
+are strings formed by 'l' and 'r' exclusively (including empty string)
+and whose values are the nodes one arrives at by following the instructions
+(also called path, or address): 'l' for left child, 'r' for right child
+starting from the root.
+
+(Of course, the nodes themselves have indication of left and right children,
+but this would allow for alternative means of navigation.)
+
+This could be a more or less equivalent (in space taken) structure to
+store all the nodes of the tree (instead of saving all nodes in a list,
+and a variable indicating the root).
