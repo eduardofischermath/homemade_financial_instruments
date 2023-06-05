@@ -89,11 +89,21 @@ class FrozenBinaryTree(FrozenTree):
 
   def __init__(
       self,
+      autodetected_initialization_argument = None,
       list_of_nodes = None,
       root = None,
+      left_right_addresses = None
       skip_checks = False,
       set_create_dict_of_parents_on_init = False):
-    # Can be formed by either giving its root or by providing a list of all nodes
+    if auto_detected_initialization_argument:
+      if isinstance(auto_detected_initialization_argument, dict):
+        left_right_addresses = autodetected_initialization_argument
+      elif isinstance(auto_detected_initialization_argument, list):
+        list_of_nodes = autodetected_initialization_argument
+      elif isinstance(auto_detected_initialization_argument, FrozenBinaryTreeNode):
+        root = autodetected_initialization_argument
+      else:
+        raise ValueError('Could not autodetect given initialization argument')
     if list_of_nodes:
       # Currently assumes list of nodes does form a binary tree
       if not skip_checks:
