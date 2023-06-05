@@ -191,6 +191,11 @@ tests can be written for other tree methods and their correctness can
 be verified by a naked human eye.
 Alternatively, use a ready-made tree library for printing.
 
+This printing can be done so that the tree goes top-to-bottom when going
+root-to-leaves (makes more sense when talking about left and right nodes,
+and is prettier but way harder to program) or left-to-right when going
+root-to-leaves.
+
 ## ISSUE #0019py ONGOING
 
 Create structure for unit testing functionalities of the Python code.
@@ -202,3 +207,30 @@ In support of an in-house solution for ISSUE #0018py, build a class for
 dealing with box of characters (currently called string boxes, meaning
 a list of strings of same size which are supposed to be displayed in a pile
 forming a rectangle of chars).
+
+That class might be called CharacterCanvas or something like that, and
+have methods which allow for drawing on the "canvas", which can be finite
+or infinite (i. e. supporting arbitrarily long strings even if codified
+in lines of finite length) and be stored as a list of same-size strings.
+This canvas can support, for example, string boxes (which may or may not
+constitute a separate class than the whole canvas), as well as lines
+connecting specific points specified as "anchors".
+
+By lines connecting anchors, the idea is: there can be an anchor point
+(given by absolute or relative coordinates) of two string boxes. For
+example, for a node in a binary tree and a left child, where the levels
+of the tree are characterized by their height on the canvas, there can be a
+southwest anchor on the parent node and a north anchor on the left child
+so that these anchors can be connected via some characters on the canvas
+(typically something like '-', '/', '|' or '\') in "ASCII art style".
+Although this example was for trees where the root is on the top and it
+"grows down", it can also be used for trees where the root is on the left.
+
+There can simply be a method of the canvas: create line between two anchors.
+There can also be methods for finding the correct anchor points, and
+others for adding a string box to the canvas at a specific coordinate.
+
+An horizontal example with one canvas, two boxes and one line would be:
+ -----       -----
+|box 1|-----|box 2|
+ -----       -----
