@@ -72,19 +72,12 @@ class FrozenBinaryTree(FrozenTree):
   right nodes. In case there is a single one, it is specified whether
   it is a left or right child.
   
-  Nodes should be FrozenBinaryTreeNode or equivalent.
-  
-  Can be initialized with:
-  a (nonempty) full list of nodes;
-  or with a single node representing the root;
-  or with a dict of left-right addresses, defined below
-  
-  Stores in instance a dictionary of left-right addresses. That is, a
-  dictionary whose keys are strings whose only characters are 'l' or 'r'
-  (including the empty string), and whose values are the nodes which are
-  the destination if one follows the instructions contained on the key
-  starting at the root node ('l' for taking left child, 'r' for taking
-  right child).
+  Instance stores a dictionary of left-right addresses of nodes. That is,
+  a dictionary whose keys are strings whose only characters are 'l' or 'r'
+  (including the empty string), and whose values are the nodes (instances
+  of FrozenBinaryTreeNode) which are the destination if one follows the
+  instructions contained on the key starting at the root node ('l' for
+  taking left child, 'r' for taking right child). 
   """
 
   def __init__(
@@ -94,13 +87,30 @@ class FrozenBinaryTree(FrozenTree):
       root = None,
       left_right_addresses = None
       skip_checks = False,
-      set_create_dict_of_parents_on_init = False):
+      forbid_picking_nodes_from_other_trees = False):
+    r"""
+    Can be initialized with:
+    a (nonempty) full list of nodes;
+    or with a single node representing the root;
+    or with a dict of left-right addresses
+    
+    Nodes are typically BinaryNode instances which are transformed into
+    FrozenBinaryTreeNode instances for storage in the tree.
+    
+    Some checks might be performed to assure a tree is indeed formed with
+    a given list of nodes or of left-right addresses. The variable
+    skip_checks can be set to True so the checks are not executed.
+    
+    forbid_picking_nodes_from_other_trees argument is passed to
+    create_frozenbinarytreenode_from_binarynode method which is called
+    during initialization
+    """
     if auto_detected_initialization_argument:
       if isinstance(auto_detected_initialization_argument, dict):
         left_right_addresses = autodetected_initialization_argument
       elif isinstance(auto_detected_initialization_argument, list):
         list_of_nodes = autodetected_initialization_argument
-      elif isinstance(auto_detected_initialization_argument, FrozenBinaryTreeNode):
+      elif isinstance(auto_detected_initialization_argument, (BinaryNode, FrozenBinaryTreeNode):
         root = autodetected_initialization_argument
       else:
         raise ValueError('Could not autodetect given initialization argument')
@@ -130,12 +140,31 @@ class FrozenBinaryTree(FrozenTree):
       self.root = root
       self.list_of_nodes = self.static_dirty_get_list_of_nodes_from_root(self.root)
     else:
-      raise ValueError('Needs either root or nonempty list of nodes to build instance')
-    # Finally, set dict_of_parents but only if requested
-    if set_create_dict_of_parents_on_init:
-      self.create_dict_of_parents(
-          set_as_attribute_instead_of_returning = True,
-          reuse_if_already_set = True)
+      raise ValueError('Needs root, or list of nodes, or left-right addresses to build instance')
+
+  def create_frozenbinarytreenode_from_binarynode(self, node, parent,
+      forbid_picking_nodes_from_other_trees = False):
+    r"""
+    Creates FrozenBinaryTreeNode using data, left and right attributes
+    from given node, and adds correct parentage information (in the
+    context of the tree) to the new node.
+    
+    If forbid_picking_nodes_from_other_trees is True, then nodes must be
+    given as BinaryNode instances. If False, it can accept nodes as
+    FrozenBinaryTreeNodes from other trees (erasing the previous parentage
+    information).
+    """
+    if isinstance(node, FrozenBinaryTreeNode):
+      if forbid_picking_nodes_from_other_trees:
+        raise TypeError('Want loose binary node (not in another tree)')
+      else:
+        pass # Don't need to convert to BinaryNode, use duck typing
+    node_in_tree = FrozenBinaryTreeNode(
+        data = node.data,
+        left = node.left,
+        right = node.right,
+        parent = parent)
+    return node_in_tree
 
   @staticmethod
   def check_consistency_of_list_of_nodes(
@@ -182,87 +211,55 @@ class FrozenBinaryTree(FrozenTree):
   
   def get_root(self):
     """Returns root of tree."""
-    return self.root
+    return self.left_right_addresses['']
     
-  def get_parent_of_node_in_tree(self, node, set_dict_of_parents_if_inexistent = False):
-    r"""
-    Returns parent of node, or None if root.
+  def get_parent_of_node_in_tree(self, node):
+    """Returns parent of node in tree, or None if node is the root of the tree."""
+    return node.parent
     
-    If set_dict_of_parents_if_inexistent, will set the `dict_of_parents`
-    attribute for future consultations. This might be advantageous as
-    establishing the parents for all nodes should cost about only double
-    of the time needed for a single node."""
-    if set_dict_of_parents_if_inexistent or hasattr(self, dict_of_parents):
-      self.create_dict_of_parents(
-          set_as_attribute_instead_of_returning = True,
-          reuse_if_already_set = True)
-      return sef.dict_of_parents[node]
-    else:
-      putative_parent = None
-      for other_node in self.list_of_nodes:
-        if other_node.left == node or other_node.right == node:
-          putative_parent = other_node
-          break
-      return putative_parent
-
-  def create_dict_of_parents(
-      self,
-      set_as_attribute_instead_of_returning = False,
-      reuse_if_already_set = False):
-    r"""
-    Creates a dictionary associating to each node its parent (or None
-    for the root).
+  def get_left_child_of_node_in_tree(self, node):
+    """Returns left child of node, or None if it does not exist."""
+    return node.left
     
-    Has the option of either returning the dictionary or setting it as
-    an attribute `dict_of_parents` of the instance (and returning None).
+  def get_right_child_of_node_in_tree(self, node):
+    """Returns right child of node, or None if it does not exist."""
+    return node.right
+  
+  def get_list_of_children_of_node_in_tree(self, node):
+    """Returns a list with left and right child of node respectively."""
+    # Done this way to be consistent with other subclasses of same superclass
+    return [
+        self.get_left_child_of_node_in_tree(),
+        self.get_right_child_of_node_in_tree()]
     
-    Has the option to reuse or ignore a `dict_of_parents` previously set
-    as attribute. If not ignored and the attribute is set, then the method
-    simply uses it. Otherwise, it creates the dict from scratch, setting
-    it as an attribute or returning it.
-    """
-    if reuse_if_already_set and hasattr(self, dict_of_parents):
-      dict_of_parents = self.dict_of_parents
-    else:
-      dict_of_parents = {}
-      for node in self.list_of_nodes:
-        if node.left != None:
-          dict_of_parents[node.left] = node
-        if node.right != None:
-          dict_of_parents[node.right] = node
-    if set_as_attribute_instead_of_returning:
-      self.dict_of_parents = dict_of_parents
-      return None
-    else:
-      return dict_of_parents
-    
-  def navigate_tree_by_string(self, node, string, raise_error_if_string_has_invalid_chars = True,
-      raise_error_if_navigation_leads_to_none = True):
+  def navigate_tree_by_string(self, node, string, ignore_error_if_string_has_invalid_chars = False,
+      ignore_error_if_navigation_leads_to_none = False):
     r"""
     Given an initial node and a string made with the characters 'p', 'l' and 'r'
     will produce the node obtaining from the operations of successfuly
     taking parent (for 'p') or left child (for 'l') or right child (for 'r')
     starting from the initial node.
     
+    Will ignore capitalization.
+    
     Has option to allow for staying in place if a 'p', 'l' or 'r' instruction
     is provided which would lead to no node. This is potentially dangerous
-    but is left as an option.
+    and lead to unexpected results but is left as an option.
+    
+    Also allow for deciding on whether to raise an error or ignore when
+    there are characters which are not 'p', 'l' or 'r'.
     """
-    # Since this might be called multiple times it might be useful to set
-    #all parents at once instead of searching every time
-    self.create_dict_of_parents(
-        set_as_attribute_instead_of_returning = True,
-        reuse_if_already_set = True)
+    string = string.lower()
     current_node = node
     for char in string:
-      if char.lower() == 'p':
-        putative_next_node = self.dict_of_parents[current_node]
-      elif char.lower() == 'l':
-        putative_next_node = current_node.left
-      elif char.lower() == 'r':
-        putative_next_node = current_node.right
+      if char == 'p':
+        putative_next_node = self.get_parent_of_node_in_tree(current_node)
+      elif char == 'l':
+        putative_next_node = self.get_left_child_of_node_in_tree(current_node)
+      elif char == 'r':
+        putative_next_node = self.get_right_child_of_node_in_tree(current_node)
       else:
-        if raise_error_if_string_has_invalid_chars:
+        if not ignore_error_if_string_has_invalid_chars:
           raise ValueError('String should contain only \'p\', \'l\' and \'r\'.')
         else:
           pass
@@ -270,7 +267,7 @@ class FrozenBinaryTree(FrozenTree):
       if putative_next_node is not None:
         current_node = putative_next_node
       else:
-        if raise_error_if_navigation_leads_to_none:
+        if not ignore_error_if_navigation_leads_to_none:
           raise ValueError('Cannot follow path for navigation inside tree.')
         else:
           # current_node stays as it is for this loop iteration,
@@ -507,7 +504,8 @@ class BinaryNode():
 
 class FrozenBinaryTreeNode():
   r"""
-  A node in a FrozenBinaryTree.
+  A node in a FrozenBinaryTree, which is the typical context where an
+  instance is expected to be created.
   
   Has information on its parent, its left child and its right child,
   (None if any of those doesn't exist) stored in an attribute. Also
@@ -519,3 +517,10 @@ class FrozenBinaryTreeNode():
     self.left = left
     self.right = right
     self.parent = parent
+    
+  def produce_equivalent_loose_binary_node(self):
+    r"""
+    Produces the corresponding loose node, that is, the BinaryNode with
+    same data, left and right attributes (with parentage forgotten).
+    """
+    return BinaryNode(self.data, self.left, self.right)
