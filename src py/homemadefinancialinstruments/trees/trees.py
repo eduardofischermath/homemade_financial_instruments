@@ -72,11 +72,19 @@ class FrozenBinaryTree(FrozenTree):
   right nodes. In case there is a single one, it is specified whether
   it is a left or right child.
   
-  Always has as attributes `list_of_nodes` and `root`. An useful but
-  optional attribute is `dict_of_parents`.
+  Nodes should be FrozenBinaryTreeNode or equivalent.
   
-  Can be initialized with a (nonempty) full list of nodes or with a
-  single node representing the root.
+  Can be initialized with:
+  a (nonempty) full list of nodes;
+  or with a single node representing the root;
+  or with a dict of left-right addresses, defined below
+  
+  Stores in instance a dictionary of left-right addresses. That is, a
+  dictionary whose keys are strings whose only characters are 'l' or 'r'
+  (including the empty string), and whose values are the nodes which are
+  the destination if one follows the instructions contained on the key
+  starting at the root node ('l' for taking left child, 'r' for taking
+  right child).
   """
 
   def __init__(
