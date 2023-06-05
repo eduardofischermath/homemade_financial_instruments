@@ -479,18 +479,21 @@ class FrozenPerfectBinaryTreeOfDicts(FrozenPerfectBinaryTree, FrozenBinaryTreeOf
   """A frozen perfect binary tree having dictionaries as data in every node."""
   
   pass
-  
-class FrozenBinaryTreeNode():
+
+class BinaryNode():
   r"""
-  A node in a FrozenBinaryTree.
+  A classical binary node, with data, left and right attributes.
   
-  Has information on its left and right child: None if each doesn't exist,
-  and the FrozenBinaryTreeNode itself if any does. Also contains data.
+  Following the typical convention for trees and nodes, there is no
+  parent information stored with the object itself. This is consistent
+  with the fact that a BinaryNode can be the root of a tree of itself
+  with its children, and can also be a non-root node in a larger tree
+  (if any other node has the instance as left or right child), and so
+  there is no intrinsic parent information for a loose node.
   
-  Following the typical convention for trees and nodes, even if the node
-  object has a parent, it is not stored with the object itself. In the
-  case of a FrozenBinaryTree, the parentage information is stored in the
-  tree object.
+  When used as a node in the context of a specific FrozenBinaryTree,
+  the information of the instance will be passed (along with correct
+  parentage information) to a new FrozenBinaryTreeNode instance.
   """
   
   def __init__(self, data, left = None, right = None):
@@ -499,3 +502,20 @@ class FrozenBinaryTreeNode():
     self.right = right
     # Note: typically there is no information about the parent of a node
     #in the node itself. This convention is maintained here
+    # When within a FrozenBinaryTree, should be transformed into a
+    #FrozenBinaryTreeNode to include parent information
+
+class FrozenBinaryTreeNode():
+  r"""
+  A node in a FrozenBinaryTree.
+  
+  Has information on its parent, its left child and its right child,
+  (None if any of those doesn't exist) stored in an attribute. Also
+  contains data in an attribute.
+  """
+  
+  def __init__(self, data, left = None, right = None, parent = None):
+    self.data = data
+    self.left = left
+    self.right = right
+    self.parent = parent

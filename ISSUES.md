@@ -250,7 +250,7 @@ This could be a more or less equivalent (in space taken) structure to
 store all the nodes of the tree (instead of saving all nodes in a list,
 and a variable indicating the root).
 
-## ISSUE #0022py OPEN
+## ISSUE #0022py ONGOING
 
 Split implementation of binary nodes into two different classes (none
 should be a subclass of the other):
@@ -262,3 +262,9 @@ data, left, right and parent attributes
 The root of the tree has its parent attribute set to None, and so one can
 rebuild a tree from its root without creating a self-referencing,
 chicken-and-egg problem.
+
+This change also has the benefit of forgoing the cumbersome dict_of_parents
+attribute in a FrozenBinaryTree, which besides taking up space had the
+problem of using nodes as dict keys (they don't have a default hash, and an
+implemented hash would likely need to be recomputed every time the content
+of the node changes, potentially for many nodes).
