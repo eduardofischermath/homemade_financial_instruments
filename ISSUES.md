@@ -235,7 +235,7 @@ An horizontal example with one canvas, two boxes and one line would be:
 |box 1|-----|box 2|
  -----       -----
  
-## ISSUE #0021py OPEN
+## ISSUE #0021py ONGOING
 
 Consider descriptions of a binary tree given by a dictionary whose keys
 are strings formed by 'l' and 'r' exclusively (including empty string)

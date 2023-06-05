@@ -30,16 +30,27 @@ from ..utilities import *
 from ..formulas import *
 
 class FrozenTree():
-  """A tree with frozen node structure (the nodes may have mutable data)."""
+  r"""
+  A tree with frozen node structure (the nodes may have mutable data).
+  
+  There is a specific root, and the nodes can have any number of children.
+  
+  There are methods (implemented as abstract methods):
+  
+  get_root, to obtain the root of the tree
+  produce_list_of_nodes, to obtain a list of all nodes in the tree
+  get_children_of_node, to get a list of children of a given node in tree
+  """
 
   def __len__(self):
     """Returns the length or size of the tree, that is, its number of nodes"""
-    return len(list_of_nodes)
+    return len(self.produce_list_of_nodes())
 
   def reset_all_nodes_to_specific_data(self, data = None):
     """Changes the data of all nodes to be the specified data."""
-    for node in self.list_of_nodes:
+    for node in self.produce_list_of_nodes():
       nodes.data = data
+    return None
   
   def reset_all_nodes_to_dict_with_given_keys(self, keys):
     """Puts a dictionary with given keys (corresponding values being None) at every node."""
@@ -47,10 +58,12 @@ class FrozenTree():
     for key in keys:
       new_dict[key] = None
     self.reset_all_nodes_to_specific_data(new_dict)
+    return None
     
   def reset_all_nodes_to_empty_dictionary(self):
     """Puts an empty dictionary as data of every node."""
     self.reset_all_nodes_to_dict_with_given_keys([])
+    return None
 
 class FrozenBinaryTree(FrozenTree):
   r"""
