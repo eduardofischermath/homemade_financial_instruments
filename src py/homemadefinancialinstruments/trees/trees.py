@@ -229,14 +229,60 @@ class FrozenBinaryTree(FrozenTree):
     Works like check_consistency_of_list_of_nodes, but on a dict of
     left-right addresses.
     
-    Has an option check_outer_against_inner_path, which if True, will
+    Has an option require_match_of_address_and_path, which if True, will
     require the correct path/address information (called address, a key
     of the dict) is already stored in the path attribute of the node.
     """
+    # First ensure the correctness of the keys
+    for key in addresses:
+      if not isinstance(key, str) or key.count('l') + key.count('r') != len(key):
+        if return_boolean_instead_of_potentially_raising_error:
+          return False
+        else:
+          raise ValueError('Keys can only have \'l\' and \'r\' characters')
+    if require_perfectness:
+      # There is an easy way based on the length of the addresses
+      max_key_length = max(len(key) for key in addresses)
+      if len(addresses) != 2**(max_key_length + 1) - 1:
+        if return_boolean_instead_of_potentially_raising_error:
+          return False
+        else:
+          raise ValueError('Nodes do not form a perfect binary tree')
+    if forbid_picking_nodes_from_other_trees:
+      # Note: have no way to detecting what it means to be "other" tree
+      #if the paths are correctly given for each node object
+      # And so, the check is whether the nodes are indeed loose, that is,
+      #BinaryNodes, or whether they are FrozenBinaryTreeNodes but every
+      #single path information matches with the dict key
+      for key, node in addresses.items():
+        if isinstance(node, FrozenBinaryTreeNode) and (not hasattr(node, 'path') or node.path != key):
+          if return_boolean_instead_of_potentially_raising_error:
+            return False
+          else:
+            raise ValueError('Nodes appear to have path information about from another tree')
+    if require_match_of_address_and_path:
+      # In this case require a FrozenBinaryTreeNode with matching path
+      for key, node in addresses.items():
+        if not hasattr(node, 'path') or node.path != key:
+          if return_boolean_instead_of_potentially_raising_error:
+            return False
+          else:
+            raise ValueError('Nodes\' path information doesn\'t match address in dict key')
+    if require_dicts_as_data_of_nodes:
+      for node in addresses.values():
+        if not isinstance(node.data, dict):
+          if return_boolean_instead_of_potentially_raising_error:
+            return False
+          else:
+            raise ValueError('Nodes are expected to have dicts for their data')
     #############
     # WORK HERE
-    # Currently returns a default "all right" answer
+    # Missing the main test, the structure of the tree
+    # Check every left and right child of every node, if matches with address
+    # Plus check whether there is a single parentless node
     #############
+
+    # No problem found
     if return_boolean_instead_of_potentially_raising_error:
       return True
     else:
@@ -244,7 +290,7 @@ class FrozenBinaryTree(FrozenTree):
 
   @classmethod
   def check_consistency_of_list_of_nodes(
-      cls
+      cls,
       list_of_nodes,
       forbid_picking_nodes_from_other_trees = False
       require_perfectness = False,
@@ -277,6 +323,25 @@ class FrozenBinaryTree(FrozenTree):
       return True
     else:
       return None
+
+  @classmethod
+  def check_consistency_of_list_of_nodes_against_addresses(
+      cls, list_of_nodes, addresses,
+      return_boolean_instead_of_potentially_raising_error = False):
+    r"""
+    Checks whether a list of nodes have equivalent information to a dict
+    of left-right addresses.
+    
+    The dict of left-right addresses is assumed consistent.
+    """
+    if len(list_of_nodes) != len(addresses):
+      if return_boolean_instead_of_potentially_raising_error:
+        return False
+      else:
+        raise ValueError('List of nodes and dict of addresses have different lengths')
+    #############
+    # WORK HERE
+    #############
 
   @classmethod
   def obtain_parentless_nodes_from_node_list(cls, list_of_nodes):
