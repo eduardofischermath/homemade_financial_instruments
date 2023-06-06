@@ -244,7 +244,8 @@ and whose values are the nodes one arrives at by following the instructions
 starting from the root.
 
 (Of course, the nodes themselves have indication of left and right children,
-but this would allow for alternative means of navigation.)
+but this would allow for alternative means of navigation, specially for
+going up.)
 
 This could be a more or less equivalent (in space taken) structure to
 store all the nodes of the tree (instead of saving all nodes in a list,
@@ -257,11 +258,12 @@ should be a subclass of the other):
 BinaryNode for "loose" nodes, with data, left and right attributes, exactly
 what was FrozenBinaryTreeNode for, and
 FrozenBinaryTreeNode for nodes considered inside a FrozenBinaryTree, with
-data, left, right and parent attributes
+data, left, right and left-right address (name of attribute will be path)
+attributes.
 
-The root of the tree has its parent attribute set to None, and so one can
-rebuild a tree from its root without creating a self-referencing,
-chicken-and-egg problem.
+This allows a easier way to obtain a parent within a tree, avoiding the
+self-referencing, chicken-and-egg problem which would appear if there
+was a single mention of the parent in the child node.
 
 This change also has the benefit of forgoing the cumbersome dict_of_parents
 attribute in a FrozenBinaryTree, which besides taking up space had the
