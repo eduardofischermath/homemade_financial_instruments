@@ -164,7 +164,7 @@ class FrozenBinaryTree(FrozenTree):
       raise ValueError('Needs left-right addresses, root or list of nodes to build instance')
 
   @classmethod
-  def semistatic_create_node_with_parent_information(
+  def semistatic_create_node_with_path_information(
       cls,
       node,
       parent,
@@ -178,8 +178,8 @@ class FrozenBinaryTree(FrozenTree):
     
     If forbid_picking_nodes_from_other_trees is True, then nodes must be
     given as BinaryNode instances. If False, it can accept nodes as
-    FrozenBinaryTreeNodes from other trees (erasing the previous parentage
-    information).
+    FrozenBinaryTreeNodes from other trees (erasing and ignoring the
+    previous path attribute).
     
     Unless skip_checks is True, will ensure it is a correct parent-child
     relationship.
@@ -345,7 +345,12 @@ class FrozenBinaryTree(FrozenTree):
     
   def get_parent_of_node_in_tree(self, node):
     """Returns parent of node in tree, or None if node is the root of the tree."""
-    return node.parent
+    path_of_node = node.path
+    if path_of_node == '':
+      return None
+    else:
+      path_of_parent = path_of_node[:-1]
+      return self.get_lra()[path_of_parent]
     
   def get_left_child_of_node_in_tree(self, node):
     """Returns left child of node, or None if it does not exist."""
@@ -613,15 +618,16 @@ class BinaryNode():
   A classical binary node, with data, left and right attributes.
   
   Following the typical convention for trees and nodes, there is no
-  parent information stored with the object itself. This is consistent
-  with the fact that a BinaryNode can be the root of a tree of itself
-  with its children, and can also be a non-root node in a larger tree
-  (if any other node has the instance as left or right child), and so
-  there is no intrinsic parent information for a loose node.
+  parentage/path/address information stored with the object itself.
+  This is consistent with the fact that a BinaryNode can be the root of
+  a tree of itself with its children, and can also be a non-root node
+  in a larger tree (if any other node has the instance as left or right
+  child), and so there is no intrinsic parent information for a loose node.
   
   When used as a node in the context of a specific FrozenBinaryTree,
   the information of the instance will be passed (along with correct
-  parentage information) to a new FrozenBinaryTreeNode instance.
+  parentage information as determined by the path attribute) to a new
+  FrozenBinaryTreeNode instance.
   """
   
   def __init__(self, data, left = None, right = None):
@@ -638,8 +644,9 @@ class FrozenBinaryTreeNode():
   A node in a FrozenBinaryTree, which is the typical context where an
   instance is expected to be created.
   
-  Has information on its parent, its left child and its right child,
-  (None if any of those doesn't exist) stored in an attribute. Also
+  Has information on its position/place/path/address within the tree
+  (stored as path attribute), plus its left child and its right child,
+  (None if any of those doesn't exist) stored in attributes. Also
   contains data in an attribute.
   """
   
@@ -647,12 +654,12 @@ class FrozenBinaryTreeNode():
     self.data = data
     self.left = left
     self.right = right
-    self.parent = parent
+    self.path = path
     
   def produce_equivalent_loose_binary_node(self):
     r"""
     Produces the corresponding loose node, that is, the BinaryNode with
-    same data, left and right attributes (with parentage forgotten).
+    same data, left and right attributes (with path forgotten).
     """
     return BinaryNode(self.data, self.left, self.right)
 

@@ -251,7 +251,7 @@ This could be a more or less equivalent (in space taken) structure to
 store all the nodes of the tree (instead of saving all nodes in a list,
 and a variable indicating the root).
 
-## ISSUE #0022py ONGOING
+## ISSUE #0022py COMPLETE
 
 Split implementation of binary nodes into two different classes (none
 should be a subclass of the other):
