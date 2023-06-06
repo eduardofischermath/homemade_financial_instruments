@@ -40,6 +40,7 @@ class FrozenTree():
   get_root, to obtain the root of the tree
   get_list_of_nodes, to obtain a list of all nodes in the tree
   get_list_of_children_of_node_in_tree, to get a list of children of a given node in tree
+  get_parent_of_node_in_tree, to get the parent of a node in the tree (or None)
   """
 
   def __len__(self):
@@ -164,40 +165,42 @@ class FrozenBinaryTree(FrozenTree):
       raise ValueError('Needs left-right addresses, root or list of nodes to build instance')
 
   @classmethod
-  def semistatic_create_node_with_path_information(
-      cls,
+  def create_node_with_path_information(
+      self,
       node,
-      parent,
+      path,
       skip_checks = False,
       forbid_picking_nodes_from_other_trees = False,
       produce_loose_nodes_instead = False):
     r"""
     Creates a FrozenBinaryTreeNode using data, left and right attributes
-    from given node, and adds correct parentage information (in the
-    context of the tree) to the new node.
+    from given node, and adds correct path information (in the context
+    of a nonspecified binary tree) to the new node.
+    
+    The tree is not specified because this is typically called during
+    the initialization, while its methods and attributes are not fully
+    functional.
     
     If forbid_picking_nodes_from_other_trees is True, then nodes must be
     given as BinaryNode instances. If False, it can accept nodes as
     FrozenBinaryTreeNodes from other trees (erasing and ignoring the
     previous path attribute).
     
-    Unless skip_checks is True, will ensure it is a correct parent-child
-    relationship.
+    Unless skip_checks is True, will ensure only the correct characters
+    appear in the path.
     
-    Setting produce_loose_nodes_instead to True will produce BinaryNodes,
-    which don't have parents and clearly are not FrozenBinaryTreeNodes.
-    It might be a little contradictory with the name of the method but
-    it is allowed, always creating a new instance.
+    Setting produce_loose_nodes_instead to True will create a new BinaryNode
+    instance, which does not have path/address information and clearly
+    is not a FrozenBinaryTreeNode. It might be a little contradictory
+    with the name of the method but it is allowed and can be useful for
+    some purposes.
     """
     if forbid_picking_nodes_from_other_trees:
       if isinstance(node, FrozenBinaryTreeNode):
         raise TypeError('Want loose binary node (not in another tree)')
-      if isinstance(parent, FrozenBinaryTreeNode):
-        raise TypeError('Want loose binary node (not in another tree)')
-    # Check ensures correct parentage
     if not skip_checks:
-      if parent.left_child is not node and parent.right_child is not node:
-        raise ValueError('Node and parents are not child and parent')
+      if path.count('l') + path.count('r') != len(path):
+        raise ValueError('Given path has characters other than \'l\' and \'r\'')
     if produce_loose_nodes_instead:
       node_in_tree = BinaryNode(
           data = node.data,
@@ -208,11 +211,11 @@ class FrozenBinaryTree(FrozenTree):
           data = node.data,
           left = node.left,
           right = node.right,
-          parent = parent)
+          path = path)
     return node_in_tree
 
   @classmethod
-  def semistatic_check_consistency_of_list_of_nodes(
+  def check_consistency_of_list_of_nodes(
       list_of_nodes,
       require_perfectness = False,
       require_dicts_as_data_of_nodes = False,
@@ -236,7 +239,7 @@ class FrozenBinaryTree(FrozenTree):
       return None
 
   @classmethod
-  def semistatic_get_parentless_nodes_from_node_list(cls, list_of_nodes):
+  def get_parentless_nodes_from_node_list(cls, list_of_nodes):
     """Returns list of parentless nodes from a list of loose nodes."""
     # Without hashing to use sets or dicts, it is highly inefficient, O(n^2)
     nodes_with_parents = []
