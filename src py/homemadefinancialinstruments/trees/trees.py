@@ -35,20 +35,20 @@ class FrozenTree():
   
   There is a specific root, and the nodes can have any number of children.
   
-  There are methods (implemented as abstract methods):
+  There should be methods (implemented in subclasses, as abstract methods):
   
   get_root, to obtain the root of the tree
-  produce_list_of_nodes, to obtain a list of all nodes in the tree
-  get_children_of_node, to get a list of children of a given node in tree
+  get_list_of_nodes, to obtain a list of all nodes in the tree
+  get_list_of_children_of_node_in_tree, to get a list of children of a given node in tree
   """
 
   def __len__(self):
     """Returns the length or size of the tree, that is, its number of nodes"""
-    return len(self.produce_list_of_nodes())
+    return len(self.get_list_of_nodes())
 
   def reset_all_nodes_to_specific_data(self, data = None):
     """Changes the data of all nodes to be the specified data."""
-    for node in self.produce_list_of_nodes():
+    for node in self.get_list_of_nodes():
       nodes.data = data
     return None
   
@@ -83,16 +83,16 @@ class FrozenBinaryTree(FrozenTree):
   def __init__(
       self,
       autodetected_initialization_argument = None,
-      list_of_nodes = None,
+      left_right_addresses = None,
       root = None,
-      left_right_addresses = None
+      list_of_nodes = None,
       skip_checks = False,
       forbid_picking_nodes_from_other_trees = False):
     r"""
-    Can be initialized with:
-    a (nonempty) full list of nodes;
-    or with a single node representing the root;
-    or with a dict of left-right addresses
+    Can be initialized with either (a single one of them):
+    a dict of left-right addresses;
+    or a single node representing the root;
+    or a list of all nodes
     
     Nodes are typically BinaryNode instances which are transformed into
     FrozenBinaryTreeNode instances for storage in the tree.
@@ -106,16 +106,40 @@ class FrozenBinaryTree(FrozenTree):
     during initialization
     """
     if auto_detected_initialization_argument:
-      if isinstance(auto_detected_initialization_argument, dict):
+      if isinstance(auto_detected_initialization_argument, (BinaryNode, FrozenBinaryTreeNode)):
+        root = autodetected_initialization_argument
+      elif isinstance(auto_detected_initialization_argument, dict):
         left_right_addresses = autodetected_initialization_argument
       elif isinstance(auto_detected_initialization_argument, list):
         list_of_nodes = autodetected_initialization_argument
-      elif isinstance(auto_detected_initialization_argument, (BinaryNode, FrozenBinaryTreeNode):
-        root = autodetected_initialization_argument
       else:
         raise ValueError('Could not autodetect given initialization argument')
-    if list_of_nodes:
-      # Currently assumes list of nodes does form a binary tree
+    # If root or left_right_addresses is given it helps the process
+    if root or left_right_addresses:
+      if left_right_addresses:
+        self.left_right_addresses = left_right_addresses
+        root_based_on_lra = self.left_right_addresses['']
+        if not skip_checks:
+          if not root is root_based_on_lra:
+            raise('Info on given root and left-right addresses does not match')
+          # Need to also ensure FrozenBinaryTreeNodes are produced and correct
+          # Also need to take special care about 
+          ##############
+          # WORK HERE
+          ##############
+        root = root_based_on_lra
+      else:
+        # In this case root was given but not left_right_addresses
+        self.left_right_addresses = static_get_left_right_addresses_from_root(root)
+      # All left to do is maybe ensure list_of_nodes, if also given, was correct
+      if not skip_checks:
+        pass
+        ##############
+        # WORK HERE
+        ##############
+    # Hard case, no root nor left_right_addresses given
+    elif list_of_nodes:
+      # Will always check for a single root
       if not skip_checks:
         if not self.check_consistency_of_list_of_nodes(
             list_of_nodes = list_of_nodes,
@@ -136,16 +160,19 @@ class FrozenBinaryTree(FrozenTree):
             self.root = computed_root
           else:
             raise ValueError('Given root is not root of given list of nodes')
-    elif root != None:
-      self.root = root
-      self.list_of_nodes = self.static_dirty_get_list_of_nodes_from_root(self.root)
     else:
-      raise ValueError('Needs root, or list of nodes, or left-right addresses to build instance')
+      raise ValueError('Needs left-right addresses, root or list of nodes to build instance')
 
-  def create_frozenbinarytreenode_from_binarynode(self, node, parent,
-      forbid_picking_nodes_from_other_trees = False):
+  @classmethod
+  def semistatic_create_node_with_parent_information(
+      cls,
+      node,
+      parent,
+      skip_checks = False,
+      forbid_picking_nodes_from_other_trees = False,
+      produce_loose_nodes_instead = False):
     r"""
-    Creates FrozenBinaryTreeNode using data, left and right attributes
+    Creates a FrozenBinaryTreeNode using data, left and right attributes
     from given node, and adds correct parentage information (in the
     context of the tree) to the new node.
     
@@ -153,27 +180,48 @@ class FrozenBinaryTree(FrozenTree):
     given as BinaryNode instances. If False, it can accept nodes as
     FrozenBinaryTreeNodes from other trees (erasing the previous parentage
     information).
+    
+    Unless skip_checks is True, will ensure it is a correct parent-child
+    relationship.
+    
+    Setting produce_loose_nodes_instead to True will produce BinaryNodes,
+    which don't have parents and clearly are not FrozenBinaryTreeNodes.
+    It might be a little contradictory with the name of the method but
+    it is allowed, always creating a new instance.
     """
-    if isinstance(node, FrozenBinaryTreeNode):
-      if forbid_picking_nodes_from_other_trees:
+    if forbid_picking_nodes_from_other_trees:
+      if isinstance(node, FrozenBinaryTreeNode):
         raise TypeError('Want loose binary node (not in another tree)')
-      else:
-        pass # Don't need to convert to BinaryNode, use duck typing
-    node_in_tree = FrozenBinaryTreeNode(
-        data = node.data,
-        left = node.left,
-        right = node.right,
-        parent = parent)
+      if isinstance(parent, FrozenBinaryTreeNode):
+        raise TypeError('Want loose binary node (not in another tree)')
+    # Check ensures correct parentage
+    if not skip_checks:
+      if parent.left_child is not node and parent.right_child is not node:
+        raise ValueError('Node and parents are not child and parent')
+    if produce_loose_nodes_instead:
+      node_in_tree = BinaryNode(
+          data = node.data,
+          left = node.left,
+          right = node.right)
+    else:
+      node_in_tree = FrozenBinaryTreeNode(
+          data = node.data,
+          left = node.left,
+          right = node.right,
+          parent = parent)
     return node_in_tree
 
-  @staticmethod
-  def check_consistency_of_list_of_nodes(
+  @classmethod
+  def semistatic_check_consistency_of_list_of_nodes(
       list_of_nodes,
       require_perfectness = False,
       require_dicts_as_data_of_nodes = False,
       return_boolean_instead_of_potentially_raising_error = False):
     r"""
     Checks if nodes form a binary tree (or a perfect binary tree).
+    
+    That is, there should be a single root, and the tree should be closed
+    for the operations of taking the left or the right child.
     
     It can be set up to return True or False (if it passes or fails the test,
     respectively), or to raise an Error if fails the test and doing nothing
@@ -187,31 +235,113 @@ class FrozenBinaryTree(FrozenTree):
     else:
       return None
 
-  @staticmethod
-  def static_dirty_get_root_of_node_list(list_of_nodes, skip_checks = False):
-    """Obtains the root from a list of nodes."""
-    # Currently does not check nodes consistently form a tree
-    root_candidate = list_of_nodes[0]
-    while root_candidate.parent != None:
-      root_candidate = root_candidate.parent
-    return root_candidate
+  @classmethod
+  def semistatic_get_parentless_nodes_from_node_list(cls, list_of_nodes):
+    """Returns list of parentless nodes from a list of loose nodes."""
+    # Without hashing to use sets or dicts, it is highly inefficient, O(n^2)
+    nodes_with_parents = []
+    for node in list_of_nodes:
+      left = node.left
+      right = node.right
+      if left is not None:
+        known_non_roots.append(node.left)
+      if right is not None:
+        known_non_roots.append(node.right)
+    parentless_nodes = []
+    for node in list_of_nodes:
+      if node not in nodes_with_parents:
+        parentless_nodes.append(node)
+    return parentless_nodes
     
-  @staticmethod
-  def static_dirty_get_list_of_nodes_from_root(root):
-    """Produces a list of all nodes which are descendents of a given node."""
-    list_of_nodes = []
-    def navigate_tree_and_append_node_to_list(node, list_of_nodes):
-      list_of_nodes.append(node)
-      if node.left != None:
-        navigate_breadth_first_and_append_children_to_list(node.left, list_of_nodes)
-      if node.right != None:
-        navigate_breadth_first_and_append_children_to_list(node.right, list_of_nodes)
-    list_of_nodes = navigate_tree_and_append_node_to_list(root, list_of_nodes)
-    return list_of_nodes
+  @classmethod
+  def semistatic_get_root_from_node_list(cls, list_of_nodes, skip_checks = False):
+    r"""
+    Returns root from list of nodes.
+    
+    Raises error if more than one root (that is, more than one parentless
+    node) is found.
+    
+    Other checks might be run (ensure tree closed under right and left child
+    operations), depending on skip_checks variable.
+    """
+    ###########
+    # WORK HERE
+    ###########
+    # Currently without checks
+    parentless_nodes = cls.semistatic_get_parentless_nodes_from_node_list(list_of_nodes)
+    if len(parentless_nodes) == 1:
+      return parentless_nodes = parentless_nodes[0]
+    else:
+      raise ValueError('There is no single parentless node in list.')
+
+  @classmethod
+  def semistatic_get_left_right_addresses_from_root(cls, root,
+      skip_checks = False, produce_loose_nodes_instead = False):
+    r"""
+    Produces a left-right address dict for descendants of given root.
+    
+    Produces FrozenBinaryTreeNodes by default, with the root to be made
+    parentless and all other parents sets correctly. However, if
+    produce_loose_nodes_instead is set to True then it produces BinaryNodes
+    (without information of parentage).
+    """
+    addresses = {}
+    def add_node_and_descendants_as_addresses(addesses, current_node, current_path, current_parent):
+      # Updates node according to specifications
+      current_node = cls.semistatic_create_node_with_parent_information(
+          node = current_node,
+          parent = current_parent,
+          skip_checks = skip_checks,
+          forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
+          produce_loose_nodes_instead = produce_loose_nodes_instead)
+      addesses[current_path] = current_node
+      left = current_node.left
+      right = current_node.right
+      if left is not None:
+        add_node_and_descendants_as_addresses(
+            addresses = addresses,
+            current_node = left,
+            current_path = current_path + 'l',
+            current_parent = current_node)
+      if right is not None:
+        add_node_and_descendants_as_addresses(
+            addresses = addresses,
+            current_node = right,
+            current_path = current_path + 'r',
+            current_parent = current_node)
+    # A single call and addresses will be recursively updated
+    add_node_and_descendants_as_addresses(
+        addresses = addresses,
+        current_node = root,
+        current_path = '',
+        current_parent = None)
+    return addresses
+    
+  @classmethod
+  def semistatic_enhance_left_right_addresses_with_parents(addresses, skip_checks = False):
+    r"""Given dict of left-right addresses with 
+    
+    Depending on skip_checks, may raise error if dict is inconsistent
+    (i. e. information does not allow for constructing a tree).
+    
+    Passes forbid_picking_nodes_from_other_trees argument to submethod.
+    """
+    ###########
+    # WORK HERE
+    ###########
+    pass
+  
+  def get_lra(self):
+    """Alias for get_left_right_addresses."""
+    return self.get_left_right_addresses()
+    
+  def get_left_right_addresses(self):
+    """Returns left-right addresses of tree."""
+    return self.left_right_addresses
   
   def get_root(self):
     """Returns root of tree."""
-    return self.left_right_addresses['']
+    return self.get_lra()['']
     
   def get_parent_of_node_in_tree(self, node):
     """Returns parent of node in tree, or None if node is the root of the tree."""
@@ -227,7 +357,8 @@ class FrozenBinaryTree(FrozenTree):
   
   def get_list_of_children_of_node_in_tree(self, node):
     """Returns a list with left and right child of node respectively."""
-    # Done this way to be consistent with other subclasses of same superclass
+    # Done this way to be consistent with non-binary trees in case they
+    #are implemented in the future
     return [
         self.get_left_child_of_node_in_tree(),
         self.get_right_child_of_node_in_tree()]
@@ -238,7 +369,7 @@ class FrozenBinaryTree(FrozenTree):
     Given an initial node and a string made with the characters 'p', 'l' and 'r'
     will produce the node obtaining from the operations of successfuly
     taking parent (for 'p') or left child (for 'l') or right child (for 'r')
-    starting from the initial node.
+    starting from the initial given node.
     
     Will ignore capitalization.
     
@@ -524,3 +655,5 @@ class FrozenBinaryTreeNode():
     same data, left and right attributes (with parentage forgotten).
     """
     return BinaryNode(self.data, self.left, self.right)
+
+    
