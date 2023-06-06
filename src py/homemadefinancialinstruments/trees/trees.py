@@ -275,18 +275,41 @@ class FrozenBinaryTree(FrozenTree):
             return False
           else:
             raise ValueError('Nodes are expected to have dicts for their data')
-    #############
-    # WORK HERE
-    # Missing the main test, the structure of the tree
-    # Check every left and right child of every node, if matches with address
-    # Plus check whether there is a single parentless node
-    #############
-
-    # No problem found
-    if return_boolean_instead_of_potentially_raising_error:
-      return True
+    # Easiest way to check if there is a single parentless node:
+    # In a tree of n nodes there are n-1 parent-child relationships
+    # Absent circularity (which is impossible with the addresses dict due
+    #to how the addresses increase as one moves away from the root), this
+    #is enough to ensure tree-ness (provided the addresses of parent and
+    #child have the correct relationship)
+    number_parent_child_relationships = 0
+    for key, node in addresses.items():
+      if node.left is not None:
+        number_parent_child_relationships += 1
+        should_be_address_of_child = key + 'l'
+        if not addresses[should_be_address_of_child] == node.left:
+          if return_boolean_instead_of_potentially_raising_error:
+            return False
+          else:
+            raise ValueError('Incorrect parent-left child relationship in dict')
+      if node.right is not None:
+        number_parent_child_relationships += 1
+        should_be_address_of_child = key + 'r'
+        if not addresses[should_be_address_of_child] == node.right:
+          if return_boolean_instead_of_potentially_raising_error:
+            return False
+          else:
+            raise ValueError('Incorrect parent-right child relationship in dict')
+    if number_parent_child_relationships != len(addresses) - 1:
+      if return_boolean_instead_of_potentially_raising_error:
+        return False
+      else:
+        raise ValueError('Cannot form a unified tree with nodes in dict')
     else:
-      return None
+      # No problem found
+      if return_boolean_instead_of_potentially_raising_error:
+        return True
+      else:
+        return None
 
   @classmethod
   def check_consistency_of_list_of_nodes(
