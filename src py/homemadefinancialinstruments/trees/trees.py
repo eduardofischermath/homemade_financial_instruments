@@ -357,14 +357,36 @@ class FrozenBinaryTree(FrozenTree):
     
     The dict of left-right addresses is assumed consistent.
     """
+    # Given that there is no hashing, there is no other way than simply
+    #matching the objects one-by-one, starting by the length to simplify
+    # Work is O(n^2)
     if len(list_of_nodes) != len(addresses):
       if return_boolean_instead_of_potentially_raising_error:
         return False
       else:
         raise ValueError('List of nodes and dict of addresses have different lengths')
-    #############
-    # WORK HERE
-    #############
+    for node in addresses.values():
+      node_found_in_list = False
+      for idx, other_node in enumerate(list_of_nodes):
+        if node is other_node:
+          node_found_in_list = True
+          if idx == 0:
+            list_of_nodes = list_of_nodes[1:]
+          elif idx == len(list_of_nodes) - 1:
+            list_of_nodes = list_of_nodes[:len(list_of_nodes) - 1]
+          else:
+            list_of_nodes = list_of_nodes[:idx-1] + list_of_nodes[idx+1:]
+          break
+      if not node_found_in_list:
+        if return_boolean_instead_of_potentially_raising_error:
+          return False
+        else:
+          raise ValueError('List of nodes and dict of addresses have different nodes')
+    # All clear
+    if return_boolean_instead_of_potentially_raising_error:
+      return True
+    else:
+      return None
 
   @classmethod
   def obtain_parentless_nodes_from_node_list(cls, list_of_nodes):
