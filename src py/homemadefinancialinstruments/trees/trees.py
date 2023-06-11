@@ -107,7 +107,9 @@ class FrozenBinaryTree(FrozenTree):
     during initialization
     """
     if auto_detected_initialization_argument:
-      if isinstance(auto_detected_initialization_argument, (BinaryNode, FrozenBinaryTreeNode)):
+      if auto_detected_initialization_argument is None:
+        pass
+      elif isinstance(auto_detected_initialization_argument, (BinaryNode, FrozenBinaryTreeNode)):
         root = autodetected_initialization_argument
       elif isinstance(auto_detected_initialization_argument, dict):
         left_right_addresses = autodetected_initialization_argument
@@ -121,24 +123,29 @@ class FrozenBinaryTree(FrozenTree):
         self.left_right_addresses = left_right_addresses
         root_based_on_lra = self.left_right_addresses['']
         if not skip_checks:
-          if not root is root_based_on_lra:
+          if (root is not None) and (root is not root_based_on_lra):
             raise('Info on given root and left-right addresses does not match')
+        root = root_based_on_lra
+        if not skip_checks:
           # Need to also ensure FrozenBinaryTreeNodes are produced and correct
           # Also need to take special care about 
-          ##############
-          # WORK HERE
-          ##############
-        root = root_based_on_lra
+          self.check_consistency_of_left_right_addresses(
+              addresses,
+              require_match_of_address_and_path = True,
+              forbid_picking_nodes_from_other_trees = False,
+              require_perfectness = False,
+              require_dicts_as_data_of_nodes = False,
+              return_boolean_instead_of_potentially_raising_error = False)
       else:
         # In this case root was given but not left_right_addresses
-        self.left_right_addresses = static_get_left_right_addresses_from_root(root)
+        self.left_right_addresses = self.obtain_left_right_addresses_from_root(root)
       # All left to do is maybe ensure list_of_nodes, if also given, was correct
       if not skip_checks:
         pass
         ##############
         # WORK HERE
         ##############
-    # Hard case, no root nor left_right_addresses given
+    # Harder case below, where no root or left_right_addresses is given
     elif list_of_nodes:
       # Will always check for a single root
       if not skip_checks:
@@ -152,7 +159,7 @@ class FrozenBinaryTree(FrozenTree):
       if skip_checks and root is not None:
         self.root = root
       else:
-        computed_root = self.static_dirty_get_root_of_node_list(list_of_nodes)
+        computed_root = self.obtain_root_from_node_list(list_of_nodes)
         if root is None:
           self.root = computed_root
         else:
@@ -315,7 +322,7 @@ class FrozenBinaryTree(FrozenTree):
   def check_consistency_of_list_of_nodes(
       cls,
       list_of_nodes,
-      forbid_picking_nodes_from_other_trees = False
+      forbid_picking_nodes_from_other_trees = False,
       require_perfectness = False,
       require_dicts_as_data_of_nodes = False,
       return_boolean_instead_of_potentially_raising_error = False):
@@ -337,11 +344,23 @@ class FrozenBinaryTree(FrozenTree):
     If return_boolean_instead_of_potentially_raising_error is True, it
     returns True or False (if it passes or fails the test, respectively).
     If it is False, it raises an Error if fails the test and returns None
-    if it passes."""
-    #############
-    # WORK HERE
-    # Currently returns a default "all right" answer
-    #############
+    if it passes.
+    """
+    # Checks if there is are n-1 parent-child relationships for n nodes
+    # Does not check absence of circularity (equivalent to connectedness
+    #if number of parent-child relationships is right), and thus is not
+    #a complete check
+    relationships = 0
+    for node in list_of_nodes:
+      if node.left is not None:
+        relationships += 1
+      if node.right is not None:
+        relationships += 1
+    if relationships != len(list_of_nodes) - 1:
+      if return_boolean_instead_of_potentially_raising_error:
+        return False
+      else:
+        raise ValueError('List of nodes has the wrong number of parent-child relationships')
     if return_boolean_instead_of_potentially_raising_error:
       return True
     else:
@@ -418,10 +437,13 @@ class FrozenBinaryTree(FrozenTree):
     Other checks might be run (ensure tree closed under right and left child
     operations), depending on skip_checks variable.
     """
-    ###########
-    # WORK HERE
-    ###########
-    # Currently without checks
+    if not skip_checks:
+      cls.check_consistency_of_list_of_nodes(
+          list_of_nodes,
+          forbid_picking_nodes_from_other_trees = False,
+          require_perfectness = False,
+          require_dicts_as_data_of_nodes = False,
+          return_boolean_instead_of_potentially_raising_error = False)
     parentless_nodes = cls.obtain_parentless_nodes_from_node_list(list_of_nodes)
     if len(parentless_nodes) == 1:
       return parentless_nodes[0]
@@ -442,9 +464,9 @@ class FrozenBinaryTree(FrozenTree):
     addresses = {}
     def add_node_and_descendants_as_addresses(addesses, current_node, current_path, current_parent):
       # Updates node according to specifications
-      current_node = cls.semistatic_create_node_with_parent_information(
+      current_node = cls.create_node_with_path_information(
           node = current_node,
-          parent = current_parent,
+          path = current_path,
           skip_checks = skip_checks,
           forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
           produce_loose_nodes_instead = produce_loose_nodes_instead)
