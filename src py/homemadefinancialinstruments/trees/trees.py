@@ -129,13 +129,12 @@ class FrozenBinaryTree(FrozenTree):
         if not skip_checks:
           # Need to also ensure FrozenBinaryTreeNodes are produced and correct
           # Also need to take special care about 
-          self.check_consistency_of_left_right_addresses(
+          self.ensure_consistency_of_left_right_addresses(
               addresses,
               require_match_of_address_and_path = True,
               forbid_picking_nodes_from_other_trees = False,
               require_perfectness = False,
-              require_dicts_as_data_of_nodes = False,
-              return_boolean_instead_of_potentially_raising_error = False)
+              require_dicts_as_data_of_nodes = False)
       else:
         # In this case root was given but not left_right_addresses
         self.left_right_addresses = self.obtain_left_right_addresses_from_root(root)
@@ -151,8 +150,7 @@ class FrozenBinaryTree(FrozenTree):
       if not skip_checks:
         if not self.check_consistency_of_list_of_nodes(
             list_of_nodes = list_of_nodes,
-            require_perfectness = False,
-            return_boolean_instead_of_potentially_raising_error = True):
+            require_perfectness = False):
           raise ValueError('Given nodes cannot form a binary tree.')
       self.list_of_nodes = list_of_nodes
       # Shortcut for root insertion
@@ -222,18 +220,55 @@ class FrozenBinaryTree(FrozenTree):
     return node_in_tree
 
   @classmethod
-  def check_consistency_of_left_right_addresses(
+  def check_consistency_of_anything_class_version(cls, method_name, *args, **kwargs):
+    """
+    Returns a Boolean for whether arguments pass the method (without errors).
+    
+    Method can be a class or static method.
+    """
+    try:
+      method = getattr(cls, method_name)
+      method(*args, **kwargs)
+    except TypeError, ValueError: # Possible errors for use cases
+      return False
+    return True
+
+  def check_consistency_of_anything_instance_version(self, method_name, *args, **kwargs):
+    """
+    Returns a Boolean for whether arguments pass the method (without errors).
+    
+    Method can be an instance, class or static method of self.
+    """
+    try:
+      method = getattr(self, method_name)
+      method(*args, **kwargs)
+    except TypeError, ValueError: # Possible errors for use cases
+      return False
+    return True
+
+  @classmethod
+  def check_consistency_of_left_right_addresses(cls, *args, **kwargs):
+    r"""
+    Returns a Boolean for whether arguments pass (without errors)
+    ensure_consistency_of_left_right_addresses.
+    """
+    return cls.check_consistency_of_anything_class_version(
+        'ensure_consistency_of_left_right_addresses', *args, **kwargs)
+    
+  @classmethod
+  def ensure_consistency_of_left_right_addresses(
       cls,
       addresses,
       require_match_of_address_and_path = False,
       forbid_picking_nodes_from_other_trees = False,
       require_perfectness = False,
-      require_dicts_as_data_of_nodes = False,
-      return_boolean_instead_of_potentially_raising_error = False):
+      require_dicts_as_data_of_nodes = False):
     r"""
-    Checks if nodes form a binary tree.
+    Ensures nodes form a binary tree.
     
-    Works like check_consistency_of_list_of_nodes, but on a dict of
+    Returns None if everything is okay, or otherwise raise an Error.
+    
+    Works like ensure_consistency_of_list_of_nodes, but on a dict of
     left-right addresses.
     
     Has an option require_match_of_address_and_path, which if True, will
@@ -243,18 +278,12 @@ class FrozenBinaryTree(FrozenTree):
     # First ensure the correctness of the keys
     for key in addresses:
       if not isinstance(key, str) or key.count('l') + key.count('r') != len(key):
-        if return_boolean_instead_of_potentially_raising_error:
-          return False
-        else:
-          raise ValueError('Keys can only have \'l\' and \'r\' characters')
+        raise ValueError('Keys can only have \'l\' and \'r\' characters')
     if require_perfectness:
       # There is an easy way based on the length of the addresses
       max_key_length = max(len(key) for key in addresses)
       if len(addresses) != 2**(max_key_length + 1) - 1:
-        if return_boolean_instead_of_potentially_raising_error:
-          return False
-        else:
-          raise ValueError('Nodes do not form a perfect binary tree')
+        raise ValueError('Nodes do not form a perfect binary tree')
     if forbid_picking_nodes_from_other_trees:
       # Note: have no way to detecting what it means to be "other" tree
       #if the paths are correctly given for each node object
@@ -263,25 +292,16 @@ class FrozenBinaryTree(FrozenTree):
       #single path information matches with the dict key
       for key, node in addresses.items():
         if isinstance(node, FrozenBinaryTreeNode) and (not hasattr(node, 'path') or node.path != key):
-          if return_boolean_instead_of_potentially_raising_error:
-            return False
-          else:
-            raise ValueError('Nodes appear to have path information about from another tree')
+          raise ValueError('Nodes appear to have path information about from another tree')
     if require_match_of_address_and_path:
       # In this case require a FrozenBinaryTreeNode with matching path
       for key, node in addresses.items():
         if not hasattr(node, 'path') or node.path != key:
-          if return_boolean_instead_of_potentially_raising_error:
-            return False
-          else:
-            raise ValueError('Nodes\' path information doesn\'t match address in dict key')
+          raise ValueError('Nodes\' path information doesn\'t match address in dict key')
     if require_dicts_as_data_of_nodes:
       for node in addresses.values():
         if not isinstance(node.data, dict):
-          if return_boolean_instead_of_potentially_raising_error:
-            return False
-          else:
-            raise ValueError('Nodes are expected to have dicts for their data')
+          raise ValueError('Nodes are expected to have dicts for their data')
     # Easiest way to check if there is a single parentless node:
     # In a tree of n nodes there are n-1 parent-child relationships
     # Absent circularity (which is impossible with the addresses dict due
@@ -294,32 +314,31 @@ class FrozenBinaryTree(FrozenTree):
         number_parent_child_relationships += 1
         should_be_address_of_child = key + 'l'
         if not addresses[should_be_address_of_child] == node.left:
-          if return_boolean_instead_of_potentially_raising_error:
-            return False
-          else:
-            raise ValueError('Incorrect parent-left child relationship in dict')
+          raise ValueError('Incorrect parent-left child relationship in dict')
       if node.right is not None:
         number_parent_child_relationships += 1
         should_be_address_of_child = key + 'r'
         if not addresses[should_be_address_of_child] == node.right:
-          if return_boolean_instead_of_potentially_raising_error:
-            return False
-          else:
-            raise ValueError('Incorrect parent-right child relationship in dict')
+          raise ValueError('Incorrect parent-right child relationship in dict')
     if number_parent_child_relationships != len(addresses) - 1:
       if return_boolean_instead_of_potentially_raising_error:
         return False
       else:
         raise ValueError('Cannot form a unified tree with nodes in dict')
     else:
-      # No problem found
-      if return_boolean_instead_of_potentially_raising_error:
-        return True
-      else:
-        return None
+      return None
 
   @classmethod
-  def check_consistency_of_list_of_nodes(
+  def check_consistency_of_list_of_nodes(cls, *args, **kwargs):
+    r"""
+    Returns a Boolean for whether arguments pass (without errors)
+    ensure_consistency_of_list_of_nodes.
+    """
+    return cls.check_consistency_of_anything_class_version(
+        'ensure_consistency_of_list_of_nodes', *args, **kwargs)
+
+  @classmethod
+  def ensure_consistency_of_list_of_nodes(
       cls,
       list_of_nodes,
       forbid_picking_nodes_from_other_trees = False,
@@ -327,7 +346,9 @@ class FrozenBinaryTree(FrozenTree):
       require_dicts_as_data_of_nodes = False,
       return_boolean_instead_of_potentially_raising_error = False):
     r"""
-    Checks if nodes form a binary tree.
+    Ensures nodes form a binary tree.
+    
+    Returns None if everything is okay, otherwise raises an Error.
     
     That is, there should be a single root, and the tree should be closed
     for the operations of taking the left or the right child.
@@ -340,11 +361,6 @@ class FrozenBinaryTree(FrozenTree):
     
     If require_dicts_as_data_of_nodes is True, will also check if the
     data in all nodes is a dict.
-    
-    If return_boolean_instead_of_potentially_raising_error is True, it
-    returns True or False (if it passes or fails the test, respectively).
-    If it is False, it raises an Error if fails the test and returns None
-    if it passes.
     """
     # Checks if there is are n-1 parent-child relationships for n nodes
     # Does not check absence of circularity (equivalent to connectedness
@@ -367,12 +383,22 @@ class FrozenBinaryTree(FrozenTree):
       return None
 
   @classmethod
-  def check_consistency_of_list_of_nodes_against_addresses(
-      cls, list_of_nodes, addresses,
-      return_boolean_instead_of_potentially_raising_error = False):
+  def check_consistency_of_list_of_nodes_against_addresses(cls, *args, **kwargs):
     r"""
-    Checks whether a list of nodes have equivalent information to a dict
-    of left-right addresses.
+    Returns a Boolean for whether arguments pass (without errors)
+    ensure_consistency_of_list_of_nodes_against_addresses.
+    """
+    return cls.check_consistency_of_anything_class_version(
+        'ensure_consistency_of_list_of_nodes_against_addresses', *args, **kwargs)
+
+  @classmethod
+  def ensure_consistency_of_list_of_nodes_against_addresses(
+      cls, list_of_nodes, addresses):
+    r"""
+    Ensures a list of nodes have equivalent information to a dict of
+    left-right addresses.
+    
+    Returns None if everything is okay, otherwise raises an Error.
     
     The dict of left-right addresses is assumed consistent.
     """
@@ -438,12 +464,11 @@ class FrozenBinaryTree(FrozenTree):
     operations), depending on skip_checks variable.
     """
     if not skip_checks:
-      cls.check_consistency_of_list_of_nodes(
+      cls.ensure_consistency_of_list_of_nodes(
           list_of_nodes,
           forbid_picking_nodes_from_other_trees = False,
           require_perfectness = False,
-          require_dicts_as_data_of_nodes = False,
-          return_boolean_instead_of_potentially_raising_error = False)
+          require_dicts_as_data_of_nodes = False)
     parentless_nodes = cls.obtain_parentless_nodes_from_node_list(list_of_nodes)
     if len(parentless_nodes) == 1:
       return parentless_nodes[0]
@@ -510,13 +535,12 @@ class FrozenBinaryTree(FrozenTree):
     Passes forbid_picking_nodes_from_other_trees argument to submethod.
     """
     if not skip_checks:
-      cls.check_consistency_of_left_right_addresses(
+      cls.ensure_consistency_of_left_right_addresses(
           addresses = addresses,
           require_match_of_address_and_path = False,
           forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
           require_perfectness = False,
-          require_dicts_as_data_of_nodes = False,
-          return_boolean_instead_of_potentially_raising_error = False)
+          require_dicts_as_data_of_nodes = False)
     new_addresses = {}
     for address, node in addresses.items():
       new_node = cls.create_node_with_path_information(
@@ -760,8 +784,7 @@ class FrozenPerfectBinaryTree(FrozenBinaryTree):
     if not skip_checks:
       if not self.check_consistency_of_list_of_nodes(
           list_of_nodes = list_of_nodes,
-          require_perfectness = True,
-          return_boolean_instead_of_potentially_raising_error = True):
+          require_perfectness = True):
         raise ValueError('Given nodes cannot form a perfect binary tree.')
     super().__init__(list_of_nodes = list_of_nodes, root = root, skip_checks = True)
     
