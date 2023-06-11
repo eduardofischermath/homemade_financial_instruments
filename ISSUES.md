@@ -270,3 +270,21 @@ attribute in a FrozenBinaryTree, which besides taking up space had the
 problem of using nodes as dict keys (they don't have a default hash, and an
 implemented hash would likely need to be recomputed every time the content
 of the node changes, potentially for many nodes).
+
+## ISSUE #0023py OPEN
+
+For methods which check/ensure data quality is the proper one for a method,
+allow for two methods (for each possible verification or condition or
+set of conditions to be met).
+
+The method whose name starts with the words 'ensure_consistency_of' shall
+return None if everything is okay, or raise an Error otherwise. The other
+one should start with 'check_consistency_of', and return a Boolean, True
+or False, depending on whether the data is adequate. Of course, errors
+outside of the verification process intended by the method can be made
+to raise Errors.
+
+At the moment, this applies to the methods for creating a binary tree which
+must receive compatible and consistent data, and in the future it should
+apply to other contexts.
+
