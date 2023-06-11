@@ -776,17 +776,33 @@ class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
         current_node,
         formula_on_dicts,
         almost_all_other_args)
+    return None
 
 class FrozenPerfectBinaryTree(FrozenBinaryTree):
   """A FrozenBinaryTree of constant height [distance from leafs to root]."""
 
-  def __init__(self, list_of_nodes = None, root = None, skip_checks = False):
+  def __init__(
+      self,
+      autodetected_initialization_argument = None,
+      left_right_addresses = None,
+      root = None,
+      list_of_nodes = None,
+      skip_checks = False,
+      forbid_picking_nodes_from_other_trees = False):
+    # Unloads all work to FrozenBinaryTree, except checking for perfectness
+    #if requested
+    super().__init__(
+        autodetected_initialization_argument = autodetected_initialization_argument,
+        left_right_addresses = left_right_addresses,
+        root = root,
+        list_of_nodes = list_of_nodes,
+        skip_checks = skip_checks,
+        forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees)
     if not skip_checks:
-      if not self.check_consistency_of_list_of_nodes(
-          list_of_nodes = list_of_nodes,
+      if not self.check_consistency_of_left_right_addresses(
+          addresses = self.left_right_addresses,
           require_perfectness = True):
-        raise ValueError('Given nodes cannot form a perfect binary tree.')
-    super().__init__(list_of_nodes = list_of_nodes, root = root, skip_checks = True)
+        raise ValueError('Given nodes do not form a perfect binary tree.')
     
   def get_height(self):
     """Returns the height, that is, the distance from root to every leaf node"""
