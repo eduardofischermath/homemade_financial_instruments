@@ -243,9 +243,14 @@ and whose values are the nodes one arrives at by following the instructions
 (also called path, or address): 'l' for left child, 'r' for right child
 starting from the root.
 
+Ensure this is the core of the implementation of the tree (that is,
+internal storage).
+
+Do this for FrozenBinaryTree and FrozenPerfectBinaryTree.
+
 (Of course, the nodes themselves have indication of left and right children,
 but this would allow for alternative means of navigation, specially for
-going up.)
+going up.
 
 This could be a more or less equivalent (in space taken) structure to
 store all the nodes of the tree (instead of saving all nodes in a list,
