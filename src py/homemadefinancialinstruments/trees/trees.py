@@ -159,8 +159,7 @@ class FrozenBinaryTree(FrozenTree):
             list_of_nodes = list_of_nodes,
             forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
             require_perfectness = False,
-            require_dicts_as_data_of_nodes = False,
-            return_boolean_instead_of_potentially_raising_error = False)
+            require_dicts_as_data_of_nodes = False)
           raise ValueError('Given nodes cannot form a binary tree.')
       # Get root from list, then build left-right addresses from it
       # Note list_of_nodes already checked above for consistency, don't do it again
@@ -335,10 +334,7 @@ class FrozenBinaryTree(FrozenTree):
         if not addresses[should_be_address_of_child] == node.right:
           raise ValueError('Incorrect parent-right child relationship in dict')
     if number_parent_child_relationships != len(addresses) - 1:
-      if return_boolean_instead_of_potentially_raising_error:
-        return False
-      else:
-        raise ValueError('Cannot form a unified tree with nodes in dict')
+      raise ValueError('Cannot form a unified tree with nodes in dict')
     else:
       return None
 
@@ -357,8 +353,7 @@ class FrozenBinaryTree(FrozenTree):
       list_of_nodes,
       forbid_picking_nodes_from_other_trees = False,
       require_perfectness = False,
-      require_dicts_as_data_of_nodes = False,
-      return_boolean_instead_of_potentially_raising_error = False):
+      require_dicts_as_data_of_nodes = False):
     r"""
     Ensures nodes form a binary tree.
     
@@ -388,14 +383,8 @@ class FrozenBinaryTree(FrozenTree):
       if node.right is not None:
         relationships += 1
     if relationships != len(list_of_nodes) - 1:
-      if return_boolean_instead_of_potentially_raising_error:
-        return False
-      else:
-        raise ValueError('List of nodes has the wrong number of parent-child relationships')
-    if return_boolean_instead_of_potentially_raising_error:
-      return True
-    else:
-      return None
+      raise ValueError('List of nodes has the wrong number of parent-child relationships')
+    return None
 
   @classmethod
   def check_consistency_of_list_of_nodes_against_addresses(cls, *args, **kwargs):
@@ -421,10 +410,7 @@ class FrozenBinaryTree(FrozenTree):
     #matching the objects one-by-one, starting by the length to simplify
     # Work is O(n^2)
     if len(list_of_nodes) != len(addresses):
-      if return_boolean_instead_of_potentially_raising_error:
-        return False
-      else:
-        raise ValueError('List of nodes and dict of addresses have different lengths')
+      raise ValueError('List of nodes and dict of addresses have different lengths')
     for node in addresses.values():
       node_found_in_list = False
       for idx, other_node in enumerate(list_of_nodes):
@@ -438,15 +424,9 @@ class FrozenBinaryTree(FrozenTree):
             list_of_nodes = list_of_nodes[:idx-1] + list_of_nodes[idx+1:]
           break
       if not node_found_in_list:
-        if return_boolean_instead_of_potentially_raising_error:
-          return False
-        else:
-          raise ValueError('List of nodes and dict of addresses have different nodes')
+        raise ValueError('List of nodes and dict of addresses have different nodes')
     # All clear
-    if return_boolean_instead_of_potentially_raising_error:
-      return True
-    else:
-      return None
+    return None
 
   @classmethod
   def obtain_parentless_nodes_from_node_list(cls, list_of_nodes):
