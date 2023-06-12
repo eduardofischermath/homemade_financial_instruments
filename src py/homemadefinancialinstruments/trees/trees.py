@@ -148,18 +148,18 @@ class FrozenBinaryTree(FrozenTree):
           skip_checks = skip_checks,
           forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
           produce_loose_nodes_instead = False)
-        if not skip_checks:
-          if list_of_nodes is not None:
-            self.ensure_consistency_of_list_of_nodes_against_addresses(
-                list_of_nodes = list_of_nodes,
-                addresses = self.left_right_addresses)
+      if not skip_checks:
+        if list_of_nodes is not None:
+          self.ensure_consistency_of_list_of_nodes_against_addresses(
+              list_of_nodes = list_of_nodes,
+              addresses = self.left_right_addresses)
     elif list_of_nodes is not None: # left_right_addresses, root not given
       if not skip_checks:
         if not self.check_consistency_of_list_of_nodes(
             list_of_nodes = list_of_nodes,
             forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
             require_perfectness = False,
-            require_dicts_as_data_of_nodes = False)
+            require_dicts_as_data_of_nodes = False):
           raise ValueError('Given nodes cannot form a binary tree.')
       # Get root from list, then build left-right addresses from it
       # Note list_of_nodes already checked above for consistency, don't do it again
@@ -242,7 +242,7 @@ class FrozenBinaryTree(FrozenTree):
     try:
       method = getattr(cls, method_name)
       method(*args, **kwargs)
-    except TypeError, ValueError: # Possible errors for use cases
+    except (TypeError, ValueError): # Possible errors for current use cases
       return False
     return True
 
@@ -255,7 +255,7 @@ class FrozenBinaryTree(FrozenTree):
     try:
       method = getattr(self, method_name)
       method(*args, **kwargs)
-    except TypeError, ValueError: # Possible errors for use cases
+    except (TypeError, ValueError): # Possible errors for current use cases
       return False
     return True
 
