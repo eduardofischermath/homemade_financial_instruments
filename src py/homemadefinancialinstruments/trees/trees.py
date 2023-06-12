@@ -117,57 +117,71 @@ class FrozenBinaryTree(FrozenTree):
         list_of_nodes = autodetected_initialization_argument
       else:
         raise ValueError('Could not autodetect given initialization argument')
-    # If root or left_right_addresses is given it helps the process
-    if root or left_right_addresses:
-      if left_right_addresses:
-        self.left_right_addresses = left_right_addresses
-        root_based_on_lra = self.left_right_addresses['']
-        if not skip_checks:
-          if (root is not None) and (root is not root_based_on_lra):
-            raise('Info on given root and left-right addresses does not match')
-        root = root_based_on_lra
-        if not skip_checks:
-          # Need to also ensure FrozenBinaryTreeNodes are produced and correct
-          # Also need to take special care about 
-          self.ensure_consistency_of_left_right_addresses(
-              addresses,
-              require_match_of_address_and_path = True,
-              forbid_picking_nodes_from_other_trees = False,
-              require_perfectness = False,
-              require_dicts_as_data_of_nodes = False)
-      else:
-        # In this case root was given but not left_right_addresses
-        self.left_right_addresses = self.obtain_left_right_addresses_from_root(root)
-      # All left to do is maybe ensure list_of_nodes, if also given, was correct
+    # Subdivide into cases according to argument given for initialization
+    # Ensure consistency of used argument, if requested
+    # Always aim for first establishing a left_right_addresses attribute
+    # Then cross-check the given different arguments, if requested
+    if left_right_addresses is not None:
       if not skip_checks:
-        pass
-        ##############
-        # WORK HERE
-        ##############
-    # Harder case below, where no root or left_right_addresses is given
-    elif list_of_nodes:
-      # Will always check for a single root
+        self.ensure_consistency_of_left_right_addresses(
+            addresses = left_right_address,
+            require_match_of_address_and_path = False,
+            forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
+            require_perfectness = False,
+            require_dicts_as_data_of_nodes = False)
+      self.left_right_addresses = self.recreate_left_right_addresses_with_addressed_nodes(
+          addresses = left_right_addresses,
+          skip_checks = skip_checks,
+          forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees)
+      if not skip_checks:
+        if root is not None:
+          root_from_self_right_addresses = self.left_right_addresses['']
+          if root is not root_from_self_right_addresses:
+            raise ValueError('Values for root in different arguments don\'t match')
+        if list_of_nodes is not None:
+            self.ensure_consistency_of_list_of_nodes_against_addresses(
+                list_of_nodes = list_of_nodes,
+                addresses = self.left_right_addresses)
+    elif root is not None: # left_right_addresses not given
+      self.left_right_addresses = self.obtain_left_right_addresses_from_root(
+          root = root,
+          skip_checks = skip_checks,
+          forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
+          produce_loose_nodes_instead = False)
+        if not skip_checks:
+          if list_of_nodes is not None:
+            self.ensure_consistency_of_list_of_nodes_against_addresses(
+                list_of_nodes = list_of_nodes,
+                addresses = self.left_right_addresses)
+    elif list_of_nodes is not None: # left_right_addresses, root not given
       if not skip_checks:
         if not self.check_consistency_of_list_of_nodes(
             list_of_nodes = list_of_nodes,
-            require_perfectness = False):
+            forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
+            require_perfectness = False,
+            require_dicts_as_data_of_nodes = False,
+            return_boolean_instead_of_potentially_raising_error = False)
           raise ValueError('Given nodes cannot form a binary tree.')
-      self.list_of_nodes = list_of_nodes
-      # Shortcut for root insertion
-      if skip_checks and root is not None:
-        self.root = root
-      else:
-        computed_root = self.obtain_root_from_node_list(list_of_nodes)
-        if root is None:
-          self.root = computed_root
-        else:
-          # In this case root is not None and skip_checks is False
-          if root == computed_root:
-            self.root = computed_root
-          else:
-            raise ValueError('Given root is not root of given list of nodes')
+      # Get root from list, then build left-right addresses from it
+      # Note list_of_nodes already checked above for consistency, don't do it again
+      root_from_list_of_nodes = self.obtain_root_from_list_of_nodes(
+          list_of_nodes = list_of_nodes,
+          skip_checks = False)
+      self.left_right_addresses = self.obtain_left_right_addresses_from_root(
+          root = root_from_list_of_nodes,
+          skip_checks = skip_checks,
+          forbid_picking_nodes_from_other_trees = forbid_picking_nodes_from_other_trees,
+          produce_loose_nodes_instead = False)
     else:
       raise ValueError('Needs left-right addresses, root or list of nodes to build instance')
+    # Error below should only be triggered in case of a programming error
+    assert self.check_consistency_of_left_right_addresses(
+        addresses = self.left_right_addresses,
+        require_match_of_address_and_path = True,
+        forbid_picking_nodes_from_other_trees = False,
+        require_perfectness = False,
+        require_dicts_as_data_of_nodes = False), \
+        'Incorrect creation of self.left_right_addresses'
 
   @classmethod
   def create_node_with_path_information(
@@ -366,6 +380,7 @@ class FrozenBinaryTree(FrozenTree):
     # Does not check absence of circularity (equivalent to connectedness
     #if number of parent-child relationships is right), and thus is not
     #a complete check
+    # Nonetheless, it is used as the best check available for lists of nodes.
     relationships = 0
     for node in list_of_nodes:
       if node.left is not None:
@@ -453,15 +468,16 @@ class FrozenBinaryTree(FrozenTree):
     return parentless_nodes
     
   @classmethod
-  def obtain_root_from_node_list(cls, list_of_nodes, skip_checks = False):
+  def obtain_root_from_list_of_nodes(cls, list_of_nodes, skip_checks = False):
     r"""
     Returns root from list of nodes.
     
     Raises error if more than one root (that is, more than one parentless
     node) is found.
     
-    Other checks might be run (ensure tree closed under right and left child
-    operations), depending on skip_checks variable.
+    Other checks might be run (like ensuring the putative tree formed by
+    the nodes is closed under right and left child operations), depending
+    on skip_checks variable.
     """
     if not skip_checks:
       cls.ensure_consistency_of_list_of_nodes(
@@ -477,14 +493,15 @@ class FrozenBinaryTree(FrozenTree):
 
   @classmethod
   def obtain_left_right_addresses_from_root(cls, root,
-      skip_checks = False, produce_loose_nodes_instead = False):
+      skip_checks = False, forbid_picking_nodes_from_other_trees = False,
+      produce_loose_nodes_instead = False):
     r"""
     Produces a left-right address dict for descendants of given root.
     
     Produces FrozenBinaryTreeNodes by default, with the root to be made
     parentless and all other parents sets correctly. However, if
     produce_loose_nodes_instead is set to True then it produces BinaryNodes
-    (without information of parentage).
+    (without information of path/parentage).
     """
     addresses = {}
     def add_node_and_descendants_as_addresses(addesses, current_node, current_path, current_parent):
