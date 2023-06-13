@@ -274,7 +274,7 @@ This change also has the benefit of forgoing the cumbersome dict_of_parents
 attribute in a FrozenBinaryTree, which besides taking up space had the
 problem of using nodes as dict keys (they don't have a default hash, and an
 implemented hash would likely need to be recomputed every time the content
-of the node changes, potentially for many nodes).
+of the node changes, potentially for many nodes for each change).
 
 ## ISSUE #0023py COMPLETE
 
@@ -295,3 +295,19 @@ At the moment, this applies to the methods for creating a binary tree which
 must receive compatible and consistent data, and in the future this
 'check'/'ensure' naming convention should apply to other contexts.
 
+## ISSUE #0024py OPEN
+
+Need to design and write the initialization methods for FrozenBinaryTreeNode
+so that self-referencing problems do not occur.
+
+Need to streamline options regaring allowing nodes from other trees.
+There is confusion because a FrozenBinaryTreeNode has left-right path
+information, but it is not possible to access the tree it belongs to
+(or even the root, for that matter) only using the node.
+
+Idea: when building nodes from other nodes use:
+i) one Boolean option to restrict input to BinaryNodes
+ii) another to restrict input to a FrozenBinaryTreeNode already having
+the "correct" path/address
+iii) a third option to restrict input to a node which fits either of
+the previous descriptions (i and ii)
