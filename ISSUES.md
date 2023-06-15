@@ -108,9 +108,6 @@ as SageMath has some functionality, but currently most of the code is
 simply an interface for what is essentially a function. Maybe need to
 implement something like symbolic variables (like SageMath or TensorFlow).
 
-Maybe the Formula (including the FormulaOnDicts wrapper) needs to
-be made to accept only named arguments?
-
 ## ISSUE #0007py OPEN
 
 Implement formulas for up-propagationand via risk-neutral method
@@ -311,3 +308,92 @@ ii) another to restrict input to a FrozenBinaryTreeNode already having
 the "correct" path/address
 iii) a third option to restrict input to a node which fits either of
 the previous descriptions (i and ii)
+
+## ISSUE #0025py OPEN
+
+The following can be implemented on a new class (a subclass of dict),
+be implemented as a method of a "StringBox" object, or even as a separate
+thing. The ideas here are related to ISSUE #0020py.
+
+Given a dict, can prepare a representation which is a box of strings.
+For example,
+a: 10
+b: 45.25
+path: llr
+
+The colons might be forced to be aligned or not. The resulting box has
+certain dimensions. There could be options like for example abbreviating
+some of the keys or limiting the floats to a number of decimal places.
+
+Another functionality could be try to make the best representation possible
+conditioned to setting a limit for the number of columns (i. e. number of
+chars in each string of the box).
+
+The goal is to prepare good (and personalizable) boxes from dicts, and
+use them when printing a tree (in particular a FrozenBinaryTreeOfDicts).
+
+## ISSUE #0026py OPEN
+
+Consider implementing recombinant trees (as defined on Baxter and Rennie's
+book "Financial Calculus"). That is, for any vertex, taking left then right
+child yields the same node (or None) than taking right then left child.
+
+Path information can be given as a tuple of length two. The first is the
+number of left child operations, the second the number of right child
+operations. This also allows to compute the family of parents (in the case
+exactly two parents) of a node; this is done by subtracting 1 from either
+of the items of the tuple.
+
+## ISSUE #0027py OPEN
+
+Consider creating a class TrioOfNodes, which stores a parent node and
+its two children (in the context of a binary tree), possibly as the
+values of a dict.
+
+This class can be used to do operations which alter the nodes, such as
+propagate_formula_up and propagate_formula_down, without having to verify
+the nodes have the correct relationship (because this is would be done
+in a previous step than the formula propagation).
+
+(On the other hand, which other information does a TrioOfNodes has which
+is not the parent node itself?)
+
+## ISSUE #0028py OPEN
+
+An idea for printing a tree, specially good for when the data are dicts
+or otherwise good things to represent in boxes of strings. Below how a
+example with simple/minimal boxes (no decorations around the data)
+could look like:
+a: 1
+b: 100
+|___L___a: 100
+|       b: 10000
+|       |___L___a: 300
+|               b: 30000
+|       |___R___a: 400
+|               b: 40000
+|___R___c: 2
+        |___L___c:20
+                |___L___c: 200
+                |___R___c: 2000
+
+The top is root, and the children are indicated in a more or less natural
+way (L and R indicate left or right). Note the tree does not need to be
+perfect.
+
+Note that every single line is dedicated to a single node (and for nodes
+whose data is a dict, each line corresponds to a single key).
+
+The "tab" space in the example is 8 but it can be changed according to a
+method/function argument in the implementation.
+
+There can also be an option for whether the left or right child comes
+on top.
+
+## ISSUES #0029py OPEN
+
+Maybe the Formula (including the FormulaOnDicts wrapper) needs to
+be made to either accept only non-keyword/non-made arguments or accept
+only keyword/named arguments (in both inputs and outputs).
+
+This can be done by subclassing (leaving the superclass non-initializable).
