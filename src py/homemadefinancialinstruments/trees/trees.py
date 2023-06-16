@@ -629,7 +629,7 @@ class FrozenBinaryTree(FrozenTree):
           pass
     return current_node
     
-  def print_tree_in_lines(self, box_length, box_heigh, horizontal_space,
+  def print_tree_in_lines(self, box_length, box_height, horizontal_space,
       vertical_space):
     r"""
     Prints the binary tree in lines, such that the root is at the top,
@@ -664,7 +664,111 @@ class FrozenBinaryTree(FrozenTree):
     # WORK HERE
     #############
     pass
+
+  def print_tree_in_indented_display(
+      self,
+      indentation = 8,
+      put_right_child_over_left_child_instead = False,
+      output_as = 'single_string'):
+    r"""
+    Returns a single string (or returns a list of several lines, or
+    prints) representing the binary tree in a 2-D indented display.
     
+    indentation option controls the indentation
+    
+    By default the left child is displayed before [on top] of right child.
+    Setting put_right_child_over_left_child_instead to True inverts it
+    
+    Possible values for output_as:
+    'single_string': returns a single string, likely with '\n' characters within
+    'list_of_lines': returns a list of lines (strings without line breaks)
+    'print_instead': prints the result (returning None)
+    """
+    # Special codes used (in Unicode):
+    #U+2500 horizontal bar, U+2502 vertical bar
+    #U+2514 the L shape, U+251C the |- shape
+    if indentation < 4: # Minimum for all info be displayed well enough
+      indentation = 4
+    # A node (or to be more precise, its first line) is preceded by
+    #a horizontal line (with some special chars) from its parent
+    # Note 1 + ((a-1)//2) + 1 + ((a-2)//2) = a for every integer a
+    first_half_of_branch_string = '\u2500'*((indentation - 1) // 2)
+    second_half_of_branch_string = '\u2500'*((indentation - 2) // 2)
+    formula_for_branch_string = lambda x,y: x+first_half_of_branch_string+y+second_half_of_branch_string
+    branch_string_for_left_child_and_last = formula_for_branch_string('\u2514', 'L')
+    branch_string_for_left_child_and_not_last = formula_for_branch_string('\u251C', 'L')
+    branch_string_for_right_child_and_last = formula_for_branch_string('\u2514', 'R')
+    branch_string_for_right_child_and_not_last = formula_for_branch_string('\u251C', 'R')
+    # Order for processing of nodes if left is on top: pure lexicographic
+    lra_dict = self.get_lra()
+    if not put_right_child_over_left_child_instead:
+      ordered_paths_of_nodes = sorted(list(lra_dict))
+    else:
+      # Create a new way of ordering to order it correctly
+      ordering_function = lambda x: x.replace('r', 'j')
+      ordered_paths_of_nodes = sorted(list(lra_dict), key = ordering_function)
+    # Variable to control the vertical bars U+2502 (spanned through many lines)
+    tree_levels_with_ongoing_vertical_bars = set()
+    for path in ordered_paths_of_nodes:
+      node = lra_dict[path]
+      current_level = len(path) # That is, 0 for root
+      if current_level in tree_levels_with_ongoing_vertical_bars:
+        # This means the brother of the node was displayed above
+        tree_levels_with_ongoing_vertical_bars.remove(current_level)
+        if not put_right_child_over_left_child_instead:
+          branch_string_for_node = branch_string_for_right_child_and_last
+        else:
+          branch_string_for_node = branch_string_for_left_child_and_last
+      else:
+        # Thus first child to appear [or root].
+        # Look whether there is a brother to display below
+        # Set the appropriate tree_levels_with_ongoing_vertical_bars
+        #and branch_string_for_node
+        if path == '': # Exceptional case, equivalent to current_level = 0
+          branch_string_for_node = ''
+          tree_levels_with_ongoing_vertical_bars.add(current_level)
+        elif path.endswith('l'):
+          if path[:-1]+'r' in lra_dict:
+            # Left child; there will be a brother right child below
+            branch_string_for_node = branch_string_for_left_child_and_not_last
+            tree_levels_with_ongoing_vertical_bars.add(current_level)
+          else:
+            # Left child; there is no brother right child below
+            branch_string_for_node = branch_string_for_left_child_and_last
+        elif path.endswith('r'):
+          if path[:-1]+'l' in lra_dict:
+            # Right child; there will be a brother left child below
+            branch_string_for_node = branch_string_for_right_child_and_not_last
+            tree_levels_with_ongoing_vertical_bars.add(current_level)
+          else:
+            # Right child; there is no brother left child below
+            branch_string_for_node = branch_string_for_right_child_and_last
+      # Each node may take multiple lines to print
+      # This can be synthesized on a string box, or not
+      node_as_lines = str(node.data).split('\n')
+      #############
+      # WORK HERE
+      # Return when more work is done on string boxes
+      #############
+      for node_line in node_as_lines:
+        vertical_bars_as_list = [' ']*(current_level * indentation)
+        for level in tree_levels_with_ongoing_vertical_bars:
+          if level != current_level:
+            vertical_bars_as_list[level * indentation] = 
+        vertical_bars = ''.join(vertical_bars_as_list)
+        line = vertical_bars + branch_string_for_node + node_line
+        all_lines.append(line)
+      output_as = output_as.lower()
+      if output_as == 'single_string':
+        return '\n'.join(all_lines)
+      elif output_as == 'list_of_lines':
+        return all_lines
+      elif output_as == 'print_instead':
+        for line in all_lines:
+          print(line)
+        return None
+      else:
+        raise ValueError('Inexistent option for output format')
 
 class FrozenBinaryTreeOfDicts(FrozenBinaryTree):
   """A frozen binary tree having dictionaries as data in all nodes."""
