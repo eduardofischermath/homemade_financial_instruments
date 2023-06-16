@@ -361,9 +361,10 @@ is not the parent node itself?)
 ## ISSUE #0028py OPEN
 
 An idea for printing a tree, specially good for when the data are dicts
-or otherwise good things to represent in boxes of strings. Below how a
-example with simple/minimal boxes (no decorations around the data)
-could look like:
+or otherwise good things to represent in boxes of strings, and also
+easier to program that the ideas in ISSUE #0018py. Below how a example
+with simple/minimal boxes (no decorations around the data) could look like:
+
 a: 1
 b: 100
 |___L___a: 100
@@ -389,6 +390,11 @@ method/function argument in the implementation.
 
 There can also be an option for whether the left or right child comes
 on top.
+
+This is more or less (the L and R additions are new flavors specific for
+binary trees and necessary for our purposes) how the output of a "tree"
+command returns in Bash/Linux/Unix. We shall call this approach the
+"indented display", or "indented representation" of the binary tree.
 
 ## ISSUES #0029py OPEN
 
