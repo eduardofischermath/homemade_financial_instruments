@@ -31,8 +31,55 @@ class StringManagement():
   r"""
   Method related to general management of strings.
   
+  For example, centering string within a specific length, or removing
+  whitespace characters, or splitting and joining according to line breaks.
+  
   This class handles such constructions and also some adjacent concepts.
   """
+  
+  def split_string_by_line_breaks(self, string,
+      also_trim_other_nonspace_whitespace = False):
+    r"""
+    Given a single string, produces a list of lines (the original string
+    is cut at the '\n' characters).
+    
+    If also_trim_other_nonspace_whitespace is True, it will also remove
+    the other non-space non-line break whitespaces, that is, the chars
+    among '\t', '\r', '\x0b', '\x0c'.
+    """
+    list_of_strings = string.split('\n')
+    if also_trim_other_nonspace_whitespace:
+      # Note '\n' is already excluded from each string
+      f = lambda x: self.trim_nonspace_whitespace_of_string(
+          string = x,
+          removing_instead_of_converting = True)
+      list_of_strings = list(map(f, list_of_strings))
+    else:
+      pass
+    return list_of_strings
+    
+  def join_strings_with_line_breaks(self, list_of_strings,
+      also_trim_other_nonspace_whitespace = False):
+    r"""
+    Given a list of strings without line breaks, joins them into a single
+    string using the character '\n'.
+    
+    It will raise an Error if any string has a '\n' character.
+    
+    If also_trim_other_nonspace_whitespace is True, it will also remove
+    the other non-space non-line break whitespaces, that is, the chars
+    among '\t', '\r', '\x0b', '\x0c'.
+    """
+    for string in list_of_strings:
+      if '\n' in string:
+        raise ValueError('Strings are assumed to not contain line breaks already')
+    if also_trim_other_nonspace_whitespace:
+      f = lambda x: self.trim_nonspace_whitespace_of_string(
+          string = x,
+          removing_instead_of_converting = True)
+      list_of_strings = list(map(f, list_of_strings))
+    single_string = '\n'.join(list_of_strings)
+    return single_string
   
   def center_string(self, string, length, allow_longer = False):
     r"""
@@ -55,7 +102,7 @@ class StringManagement():
     the output is a string without line breaks.
     
     If removing_instead_of_converting is True, those characters are
-    removed. If False, they are converted to a regular ASCII space. The
+    removed. If False, they are converted to a regular ASCII space.
     
     Regular ASCII spaces and other non-whitespace chars are not modified.
     """
@@ -83,7 +130,11 @@ class StringManagement():
     trimmed_string = self.trim_nonspace_whitespace_of_string(
         string = string
         removing_instead_of_converting = removing_instead_of_converting)
-    return self.center_string(trimmed_string, length, allow_longer)
+    centered_trimmed_string = self.center_string(
+        string = trimmed_string,
+        length = length,
+        allow_longer = allow_longer)
+    return centered_trimmed_string
     
   def print_dict_into_lines(self, dictionary, keys_to_print = None,
       also_print_keys = False, return_as_string = False):

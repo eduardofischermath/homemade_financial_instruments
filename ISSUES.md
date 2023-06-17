@@ -311,9 +311,8 @@ the previous descriptions (i and ii)
 
 ## ISSUE #0025py ONGOING
 
-The following can be implemented on a new class (a subclass of dict),
-be implemented as a method of a "StringBox" object, or even as a separate
-thing. The ideas here are related to ISSUE #0020py.
+The following should be implemented for "StringBox" object. The ideas
+here are related to ISSUE #0020py.
 
 Given a dict, can prepare a representation which is a box of strings.
 For example,
