@@ -309,7 +309,7 @@ the "correct" path/address
 iii) a third option to restrict input to a node which fits either of
 the previous descriptions (i and ii)
 
-## ISSUE #0025py OPEN
+## ISSUE #0025py ONGOING
 
 The following can be implemented on a new class (a subclass of dict),
 be implemented as a method of a "StringBox" object, or even as a separate

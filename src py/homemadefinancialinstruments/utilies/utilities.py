@@ -27,13 +27,9 @@
 
 ########################################################################
 
-class StringBoxManagement():
+class StringManagement():
   r"""
-  Method related to general management of string boxes.
-  
-  A string box, or character box, is understood as a rectangle of chars,
-  typically written as a list of lines of chars with same length, or
-  the same chars but with the newline character.
+  Method related to general management of strings.
   
   This class handles such constructions and also some adjacent concepts.
   """
@@ -44,36 +40,49 @@ class StringBoxManagement():
     
     If allow_longer is True, this acts exactly as str.center, so if the
     string is longer then it will return unaltered. Otherwise, if
-    allow_longer is Falsen, it will preserve only the initial characters
+    allow_longer is False, it will preserve only the initial characters
     of a longer string.
     """
     if not allow_longer and len(string) > length:
       string = string[0:length]
     return string.center()
 
-  def trim_to_single_line_string(self, string):
+  def trim_nonspace_whitespace_of_string(self, string,
+      removing_instead_of_converting = False):
     r"""
-    Modifies a string to that any non-space whitespace (that is, characters
-    \t, \n, \r, \x0b, \x0c) is converted to an ASCII space.
+    Returns a new string so that any non-space whitespace (that is, characters
+    \t, \n, \r, \x0b, \x0c) of the original string is removed. In particular,
+    the output is a string without line breaks.
+    
+    If removing_instead_of_converting is True, those characters are
+    removed. If False, they are converted to a regular ASCII space. The
+    
+    Regular ASCII spaces and other non-whitespace chars are not modified.
     """
     list_for_new_string = []
     for char in string:
       if char in '\t\n\r\x0b\x0c':
-        char_to_add = ' '
+        if removing_instead_of_converting:
+          char_to_add = '' # Not a char but works in the context
+        else:
+          char_to_add = ' '
       else:
         char_to_add = char
       list_for_new_string.append(char_to_add)
     return ''.join(list_for_new_string)
     
-  def trim_to_single_line_and_center_string(self, string, length,
-      allow_longer = False):
+  def trim_nonspace_whitespace_and_center_string(self, string, length,
+      allow_longer = False, removing_instead_of_converting = False):
     r"""
-    Trims string to single line, then centers it.
+    Trims nonspace whitespace removing nonspaces, including line breaks,
+    and then centers it, returning the result in a new string.
     
-    Methods trim_to_single_line_string and center_string are applied
-    sequentially.
+    Methods trim_nonspace_whitespace_of_string and center_string are
+    applied sequentially.
     """
-    trimmed_string = self.trim_to_single_line_string(string)
+    trimmed_string = self.trim_nonspace_whitespace_of_string(
+        string = string
+        removing_instead_of_converting = removing_instead_of_converting)
     return self.center_string(trimmed_string, length, allow_longer)
     
   def print_dict_into_lines(self, dictionary, keys_to_print = None,
@@ -155,4 +164,71 @@ class StringBoxManagement():
         also_print_keys = also_print_keys,
         return_as_string = return_as_string,
         allow_longer = False)
-        
+
+class StringBox():
+  r"""
+  List of lines of same size to be visualized in a pile
+  
+  The only attribute is list_of_lines, a list of strings (sometimes
+  called lines) of the same size and without line breaks or other
+  non-space whitespace characters.
+  
+  An empty list (width 0, height 0) is allowed, as well as a nonempty
+  list of empty strings (width 0, nonzero height).
+  """
+  
+  def __init__(self, single_string = None, list_of_lines = None,
+      force_width_to = None, force_height_to = None, skip_checks = False):
+    if single_string is None and list_of_lines is None:
+      single_string = '' # Default value for initiation, thus
+    if single_string is not None and list_of_lines is not None:
+      # Check if both produce the same list_of_lines
+      ############
+      # WORK HERE
+      ############
+      raise ValueError('Init info must be given once not twice')
+    ############
+    # WORK HERE
+    ############
+  
+  @classmethod
+  def ensure_consistency_of_list_of_lines(cls, list_of_lines):
+    r"""
+    Ensures list of lines is a list made of strings of same size and
+    without special whitespace (only regular ASCII space is allowed).
+    
+    Returns None if everything is okay, and otherwise raises an Error.
+    """
+    if len(list_of_lines) >= 2:
+      length_of_first_line = len(list_of_lines[0])
+      for line in list_of_lines[1:]:
+        if len(line) != length_of_first_line:
+          raise ValueError('Not all lines have the same length')
+    for line in lines:
+      for symbol in '\t\n\r\x0b\x0c':
+        if symbol in line:
+          raise ValueError('Found non-space whitespace in one of the lines')
+    return None
+    
+  def get_width(self):
+    list_of_lines = self.as_list_of_lines()
+    if list_of_lines:
+    
+  def get_height(self):
+    list_of_lines = self.as_list_of_lines()
+    return len(list_of_lines)
+    
+  def as_single_string(self):
+    return '\n'.join(self.list_of_lines)
+    
+  def as_list_of_lines(self):
+    return self.list_of_lines
+  
+  @staticmethod
+  def from_dict(dic):
+    # Similar to StringBoxManagement.print_dict_into_string_box
+    # Maybe move and adapt code as needed
+    pass
+    
+class CharacterCanvas(StringBox):
+  pass
