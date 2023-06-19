@@ -262,7 +262,7 @@ class StringBox():
       cls,
       dictionary,
       keys_to_print = None,
-      also_print_keys = False,
+      print_values_only = False,
       force_width_to = None,
       force_height_to = None,
       align_to_center_instead_of_left = False,
@@ -271,27 +271,39 @@ class StringBox():
     Produces a StringBox from a dict (frozen in time, meaning not updated
     when dictionary is updated).
     
-    Will print the key/value information in the list keys_to_print,
-    unless this is set to None, case in which will print in the order of
-    the string representation of all the keys.
+    Will print the key/value information based on keys_to_print. If it
+    is set to None, case in which will print in the alphabetical order
+    of the string representation of all the keys. If it is a list, will
+    produce the list from those keys. If it is a dict, it will produce
+    the desired value of that dict in place of the key.
     
-    If also_print_keys is True, the resulting line (for each key) will be
-    'str(key): str(value)'. Otherwise, it is simply 'str(value)'.
+    If print_values_only is False, the resulting line (for each key) will be
+    'str(key): str(value)', perhaps with a substitution of str(key) by
+    another string if keys_to_print is given as a dict. Otherwise, the
+    resulting line is simply 'str(value)'.
     
-    All other arguments, force_width_to, force_height_to,
+    All other arguments, that is, force_width_to, force_height_to,
     align_to_center_instead_of_left and skip_checks are passed to the
     initialization method of the correct class.
     """
-    if keys_to_print is None:
-      keys_to_print = list(dictionary)
-      keys_to_print.sort(key = lambda x: str(x))
+    if isinstance(keys_to_print, dict):
+      pass
+    else:
+      if keys_to_print is None:
+        keys_to_print_as_list = list(dictionary)
+        keys_to_print_as_list.sort(key = lambda x: str(x))
+      elif isinstance(keys_to_print, (list, tuple)):
+        keys_to_print_as_list = list(keys_to_print)
+      else:
+        raise ValueError('Expect keys_to_print to be a list, a dict, or None')
+      keys_to_print = {key: key for key in keys_to_print_as_list}
     list_of_lines = []
     for key in keys_to_print:
       if key not in dictionary:
         raise KeyError('Key not in dictionary')
       value = dictionary[key]
-      if also_print_keys:
-        line = f'{key}: {value}'
+      if not print_values_only:
+        line = f'{keys_to_print[key]}: {value}'
       else:
         line = f'{value}'
       list_of_lines.append(line)
