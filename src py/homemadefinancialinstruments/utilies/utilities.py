@@ -137,86 +137,6 @@ class StringManagement():
         length = length,
         allow_longer = allow_longer)
     return centered_trimmed_string
-    
-  def print_dict_into_lines(self, dictionary, keys_to_print = None,
-      also_print_keys = False, return_as_string = False):
-    r"""
-    Given a dictionary an a list of keys_to_print, produces a list of
-    strings for the values corresponding to the keys. (It is returned,
-    not printed, despite the method's name.)
-
-    If keys_to_print is None, it will take all dict keys in alphabetical
-    order.
-    
-    If also_print_keys is True, the resulting string will be
-    'str(key):str(value)'. Otherwise, it is simply 'str(value)'
-    
-    If return_as_string is True, it instead performs a joint of the lines
-    into a single string with separator '\n'.
-    """
-    if keys_to_print is None:
-      keys_to_print = list(dictionary)
-      keys_to_print.sort(key = lambda x: str(x))
-    list_of_lines = []
-    for key in keys_to_print:
-      if key not in dictionary:
-        raise KeyError('Key not in dictionary')
-      value = dictionary[key]
-      if also_print_keys:
-        line = f'{key}:{value}'
-      else:
-        line = f'{value}'
-      list_of_lines.append(line)
-    if return_as_string:
-      return '\n'.join(list_of_lines)
-    else:
-      return list_of_lines
-
-  def print_dict_into_lines_then_trim_and_center(self, dictionary, 
-      length, keys_to_print = None, also_print_keys = False,
-      return_as_string = False, allow_longer = False):
-    r"""
-    Obtains lines from values from a dict, then trims and centers.
-    
-    Methods print_dict_into_lines, trim_to_single_line_string and
-    center_string are applied sequentially using the given arguments.
-    """
-    lines = self.print_dict_into_lines(
-        dictionary = dictionary,
-        keys_to_print = keys_to_print,
-        also_print_keys = also_print_keys,
-        return_as_string = False)
-    trimmed_lines = []
-    for line in lines:
-      trimmed_and_centered_line = self.trim_to_single_line_and_center_string(
-          line, length, allow_longer)
-      trimmed_and_centered_lines.append(trimmed_line)
-    if return_as_string:
-      return '\n'.join(trimmed_lines)
-    else:
-      return trimmed_lines
-      
-  def print_dict_into_string_box(self, dictionary, keys_to_print = None,
-      also_print_keys = False, return_as_string = False):
-    r"""
-    Produces smallest string box fitting values from a dict.
-    
-    This is equivalent to calling print_dict_into_lines_then_trim_and_center
-    with the maximum length.
-    """
-    lines = self.print_dict_into_lines(
-        dictionary = dictionary,
-        keys_to_print = keys_to_print,
-        also_print_keys = also_print_keys,
-        return_as_string = False)
-    max_length = max(len(line) for line in lines)
-    return self.print_dict_into_lines_then_trim_and_center(
-        dictionary = dictionary,
-        length = max_length,
-        keys_to_print = keys_to_print,
-        also_print_keys = also_print_keys,
-        return_as_string = return_as_string,
-        allow_longer = False)
 
 class StringBox():
   r"""
@@ -317,6 +237,7 @@ class StringBox():
     return None
     
   def get_width(self):
+    r"""Returns width (or number of columns) of the instance."""
     list_of_lines = self.as_list_of_lines()
     if list_of_lines:
       len(list_of_lines[0])
@@ -324,20 +245,64 @@ class StringBox():
       return 0
     
   def get_height(self):
+    r"""Returns width (or number of rows) of the instance."""
     list_of_lines = self.as_list_of_lines()
     return len(list_of_lines)
     
   def as_single_string(self):
+    r"""Returns single string representing the instance."""
     return '\n'.join(self.list_of_lines)
     
   def as_list_of_lines(self):
+    r"""Returns list of lines representing the instance."""
     return self.list_of_lines
   
-  @staticmethod
-  def from_dict(dic):
-    # Similar to StringBoxManagement.print_dict_into_string_box
-    # Maybe move and adapt code as needed
-    pass
+  @classmethod
+  def from_dict(
+      cls,
+      dictionary,
+      keys_to_print = None,
+      also_print_keys = False,
+      force_width_to = None,
+      force_height_to = None,
+      align_to_center_instead_of_left = False,
+      skip_checks = False):
+    r"""
+    Produces a StringBox from a dict (frozen in time, meaning not updated
+    when dictionary is updated).
+    
+    Will print the key/value information in the list keys_to_print,
+    unless this is set to None, case in which will print in the order of
+    the string representation of all the keys.
+    
+    If also_print_keys is True, the resulting line (for each key) will be
+    'str(key): str(value)'. Otherwise, it is simply 'str(value)'.
+    
+    All other arguments, force_width_to, force_height_to,
+    align_to_center_instead_of_left and skip_checks are passed to the
+    initialization method of the correct class.
+    """
+    if keys_to_print is None:
+      keys_to_print = list(dictionary)
+      keys_to_print.sort(key = lambda x: str(x))
+    list_of_lines = []
+    for key in keys_to_print:
+      if key not in dictionary:
+        raise KeyError('Key not in dictionary')
+      value = dictionary[key]
+      if also_print_keys:
+        line = f'{key}: {value}'
+      else:
+        line = f'{value}'
+      list_of_lines.append(line)
+    new_instance = cls(
+        single_string = None,
+        list_of_lines = list_of_lines,
+        force_width_to = force_width_to,
+        force_height_to = force_height_to,
+        align_to_center_instead_of_left = align_to_center_instead_of_left,
+        skip_checks = skip_checks)
+    return new_instance
     
 class CharacterCanvas(StringBox):
   pass
