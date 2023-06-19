@@ -314,8 +314,12 @@ the previous descriptions (i and ii)
 The following should be implemented for "StringBox" object. The ideas
 here are related to ISSUE #0020py.
 
+The goal is to prepare good (and personalizable) boxes from dicts, and
+use them when printing a tree (in particular a FrozenBinaryTreeOfDicts).
+
 Given a dict, can prepare a representation which is a box of strings.
-For example,
+For example (note keys are to be output without single quotes), to produce
+a StringBox which looks like:
 a: 10
 b: 45.25
 path: llr
@@ -327,9 +331,6 @@ some of the keys or limiting the floats to a number of decimal places.
 Another functionality could be try to make the best representation possible
 conditioned to setting a limit for the number of columns (i. e. number of
 chars in each string of the box).
-
-The goal is to prepare good (and personalizable) boxes from dicts, and
-use them when printing a tree (in particular a FrozenBinaryTreeOfDicts).
 
 ## ISSUE #0026py OPEN
 
