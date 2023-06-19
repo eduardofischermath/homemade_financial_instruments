@@ -309,7 +309,7 @@ the "correct" path/address
 iii) a third option to restrict input to a node which fits either of
 the previous descriptions (i and ii)
 
-## ISSUE #0025py ONGOING
+## ISSUE #0025py COMPLETE
 
 The following should be implemented for "StringBox" object. The ideas
 here are related to ISSUE #0020py.
@@ -330,10 +330,6 @@ certain dimensions.
 There could be options like for example abbreviating some of the keys
 (for example through another dict) or limiting the floats to a specific
 number of decimal places.
-
-Another functionality could be try to make the best representation possible
-conditioned to setting a limit for the number of columns (i. e. number of
-chars in each string of the box).
 
 ## ISSUE #0026py OPEN
 
@@ -399,10 +395,20 @@ binary trees and necessary for our purposes) how the output of a "tree"
 command returns in Bash/Linux/Unix. We shall call this approach the
 "indented display", or "indented representation" of the binary tree.
 
-## ISSUES #0029py OPEN
+## ISSUE #0029py OPEN
 
 Maybe the Formula (including the FormulaOnDicts wrapper) needs to
 be made to either accept only non-keyword/non-made arguments or accept
 only keyword/named arguments (in both inputs and outputs).
 
 This can be done by subclassing (leaving the superclass non-initializable).
+
+## ISSUE #0030py OPEN
+
+A possible functionality for the production of a StringBox from a dict:
+there could be an option to try to compress the lines and make the best
+representation possible conditioned to setting a limit for the number
+of columns (i. e. number of chars in each string of the box). For example,
+to reduce space, dynamic strategies such as omitting the ASCII spaces
+of the string ': ', or rounding to a smaller case of decimal places
+could take place.
