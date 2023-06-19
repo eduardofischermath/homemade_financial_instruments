@@ -263,6 +263,7 @@ class StringBox():
       dictionary,
       keys_to_print = None,
       print_values_only = False,
+      max_precision_for_floats = None,
       force_width_to = None,
       force_height_to = None,
       align_to_center_instead_of_left = False,
@@ -281,6 +282,10 @@ class StringBox():
     'str(key): str(value)', perhaps with a substitution of str(key) by
     another string if keys_to_print is given as a dict. Otherwise, the
     resulting line is simply 'str(value)'.
+    
+    If max_precision_for_floats is set to a number, then all numeric values
+    will be displayed precision for the display. If it is None,
+    there will be no such restriction.
     
     All other arguments, that is, force_width_to, force_height_to,
     align_to_center_instead_of_left and skip_checks are passed to the
@@ -302,6 +307,17 @@ class StringBox():
       if key not in dictionary:
         raise KeyError('Key not in dictionary')
       value = dictionary[key]
+      if max_precision_for_floats is not None:
+        # Do not want to alter value if it is a string, only a numeric
+        #(i. e. well-covertible to float) type
+        if not isinstance(value, str):
+          try:
+            value = float(value)
+          except ValueError:
+            pass
+          else:
+            # Should ensure correct display in f-string
+            value = round(value, max_precision_for_floats)
       if not print_values_only:
         line = f'{keys_to_print[key]}: {value}'
       else:

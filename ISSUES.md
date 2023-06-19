@@ -325,8 +325,11 @@ b: 45.25
 path: llr
 
 The colons might be forced to be aligned or not. The resulting box has
-certain dimensions. There could be options like for example abbreviating
-some of the keys or limiting the floats to a number of decimal places.
+certain dimensions.
+
+There could be options like for example abbreviating some of the keys
+(for example through another dict) or limiting the floats to a specific
+number of decimal places.
 
 Another functionality could be try to make the best representation possible
 conditioned to setting a limit for the number of columns (i. e. number of
