@@ -412,3 +412,12 @@ of columns (i. e. number of chars in each string of the box). For example,
 to reduce space, dynamic strategies such as omitting the ASCII spaces
 of the string ': ', or rounding to a smaller case of decimal places
 could take place.
+
+## ISSUE #0031py OPEN
+
+Consider creating a class called UnevenStringBox. The name is a bit
+contradictory name, but it would mean a list of lines but without the
+lines being all the same size.
+
+This way, StringBox would be a subclass of UnevenStringBox, and every
+StringBox instance would be also an UnevenStringBox instance.
