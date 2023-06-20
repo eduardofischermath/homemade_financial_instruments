@@ -744,13 +744,27 @@ class FrozenBinaryTree(FrozenTree):
             # Right child; there is no brother left child below
             branch_string_for_node = branch_string_for_right_child_and_last
       # Each node may take multiple lines to print
-      # This can be synthesized on a string box, or not
-      node_as_lines = str(node.data).split('\n')
-      #############
-      # WORK HERE
-      # Return when more work is done on string boxes
-      #############
-      for node_line in node_as_lines:
+      # There will be a StringBox formed for this purpose
+      # (Which even has a special creation method from a dictionary)
+      if isinstance(node.data, dict):
+        node_as_string_box = StringBox.from_dict(
+            dictionary = node.data,
+            keys_to_print = None,
+            print_values_only = False,
+            max_precision_for_floats = None,
+            force_width_to = None,
+            force_height_to = None,
+            align_to_center_instead_of_left = False,
+            skip_checks = False)
+      else:
+        node_as_string_box = StringBox(
+            single_string = str(node.data)
+      # Any trailing spaces from any line of the StringBox can simply be omitted
+      # After all, there is no other information to be included in the
+      #same line to the right
+      node_as_even_lines = node_as_string_box.as_list_of_lines()
+      node_as_uneved_lines = [rstrip(line) for line in node_as_even_lines]
+      for node_line in node_as_uneved_lines:
         vertical_bars_as_list = [' ']*(current_level * indentation)
         for level in tree_levels_with_ongoing_vertical_bars:
           if level != current_level:

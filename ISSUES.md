@@ -357,7 +357,7 @@ in a previous step than the formula propagation).
 (On the other hand, which other information does a TrioOfNodes has which
 is not the parent node itself?)
 
-## ISSUE #0028py ONGOING
+## ISSUE #0028py COMPLETE
 
 An idea for printing a tree, specially good for when the data are dicts
 or otherwise good things to represent in boxes of strings, and also
