@@ -421,3 +421,39 @@ lines being all the same size.
 
 This way, StringBox would be a subclass of UnevenStringBox, and every
 StringBox instance would be also an UnevenStringBox instance.
+
+## ISSUE #0032py OPEN
+
+An idea to generate trees in a single line, like a one-line "__repr__".
+(Ideas valid also for instantiation of trees.) Can always represent
+each node in a binary tree as a triple, the triple being its value/content,
+the left and the right node (maybe None). This can be represented like in:
+"(10, (20, None, None), None)". With some effort, it might be possible
+to even parse a string (but receiving a tuple/list would be way easier).
+
+## ISSUE #0033py OPEN
+
+To increase the modularity of the design, separate the Nodes (the many
+types) from the Trees (the many types).
+
+Although in the program they are used in tandem, the nodes are conceptually
+more independent. For example, they can be used to form trees (like
+in data structures such as heaps/priority queues and binary search trees)
+without the overarching of our trees (which don't even have the
+self-mutability needed for those data structures).
+
+Thus, in some way, non-frozen trees are implemented in this program -
+to do so, use the classes from the nodes package and ignore the trees
+package.
+
+## ISSUE #0034py OPEN
+
+Consider renaming the trees package (which contains only frozen trees)
+to frozen_trees. First because they are all frozen, the binary ones
+even having an argument for the L-R-path/address. Second is that trees
+can be formed only with the nodes - even if some operations might be
+a little harder to execute.
+
+Other alternative is to keep the same name but also have trees
+with mutable node structure (in the future, as they are not needed now).
+
