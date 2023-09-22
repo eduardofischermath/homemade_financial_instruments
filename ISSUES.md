@@ -457,3 +457,22 @@ a little harder to execute.
 Other alternative is to keep the same name but also have trees
 with mutable node structure (in the future, as they are not needed now).
 
+## ISSUE #0035py OPEN
+
+Consider whether to keep FrozenBinaryTree as a subclass of FrozenTree.
+
+One reason to keep it: all methods of FrozenTree are applicable (with
+any possible arguments) to all FrozenBinaryTrees with the understanding
+that the left node is the child 0 and the right node is the child 1 of
+a node (when considered as FrozenTrees, where the children are given
+numbers).
+
+One reason to not: if we want to implement an address/path system for a
+FrozenTree, it can be done with a sequence of numbers (instead of
+L-R-paths as is the case for FrozenBinaryTrees). But in this case the
+addresses would be incompatible for a FrozenBinaryTree when considered
+as a FrozenTree: would the path be "lrll" or "0100"?
+
+So if we want to implement paths for FrozenTrees, I believe we are
+forced to abandon the subclassing.
+
