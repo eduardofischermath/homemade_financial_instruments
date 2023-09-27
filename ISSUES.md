@@ -476,3 +476,59 @@ as a FrozenTree: would the path be "lrll" or "0100"?
 So if we want to implement paths for FrozenTrees, I believe we are
 forced to abandon the subclassing.
 
+## ISSUE #0036py OPEN
+
+Revolutionize the implementation of FrozenBinaryTree and
+FrozenBinaryTreeNode.
+
+Make FrozenBinaryTreeNode a nested class inside FrozenBinaryTree.
+Also, FrozenBinaryTreeNode should have 5 attributes: value/data/content,
+which can be changed more or less freely, and 4 others fundamentally
+related to the tree (but crucially don't reference the tree literally,
+as that could bring an undesired circularity to the design): left,
+right, parent and path/address.
+
+The FrozenBinaryTreeNode should be a dictionary whose keys are paths/
+addresses and whose values are the nodes at that position (the nodes
+will have their paths/addresses in them too).
+
+In Python, these 4 could be marked as properties, to be read-only, and
+to be set only once by the FrozenBinaryTree (in a separate method of
+FrozenBinaryTree to be called by FrozenBinaryTree after initiation).
+
+Then methods such as FrozenBinaryTree.get_left_child_of_node_in_tree
+(and other navigation methods) can read the correct property in the node.
+This would also make dict_of_parents obsolete.
+
+Rationale: since FrozenBinaryTreeNode don't exist without the tree, the
+design should indicate that by subclassing. Also, left/right/parent/path
+(or address) should never change during the lifetime of a
+FrozenBinaryTreeNode.
+
+(Also, note that this could all be created without the nodes themselves,
+but it is probably better to have a specific class to encapsulate the
+data and the structure and what it means to the whole tree.)
+
+## ISSUE #0037py OPEN
+
+Consider creating a class Node to mean a "blob" with some data. Then it
+can have as subclasses (loose) BinaryNode, FrozenBinaryTreeNode (even
+being a nested class) and also other non-binary nodes.
+
+Even if the class would be a bit meaningless, it could help from the
+point of view of integrating with printing -- for example, methods for
+printing a box around the content could be written to Node so they could
+be inherited by all its subclasses.
+
+## ISSUE #0038 OPEN
+
+Implement the following idea: a binary tree representing possible
+variations of a stock, but at each odd level, it branches off into two
+values (up and down), while at the even levels, it branches off into
+"stable" or "jump-down" (say a fixed proportion of the asset value).
+
+This could be a tool to model jump-diffusion models while maintaining a 
+binary tree (where derivatives can be hedges with asset and bond and
+thus can be computed back the tree whatever they payoff is at the leaves).
+
+(Idea was based on Joshi's book, page 86.)
