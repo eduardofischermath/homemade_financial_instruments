@@ -532,3 +532,17 @@ binary tree (where derivatives can be hedges with asset and bond and
 thus can be computed back the tree whatever they payoff is at the leaves).
 
 (Idea was based on Joshi's book, page 86.)
+
+## ISSUE #0039ja OPEN
+
+Start project also in Java
+
+## ISSUE #0040ja OPEN
+
+Implement formulas for outstanding balance/balance due.
+In particular, for a case of fixed installments, given three among:
+outstanding balance, the interest rate (say per month), the number of time
+units (say months) and the installment, compute the fourth.
+
+
+
