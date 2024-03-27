@@ -537,7 +537,7 @@ thus can be computed back the tree whatever they payoff is at the leaves).
 
 Start project also in Java
 
-## ISSUE #0040ja OPEN
+## ISSUE #0040ja ONGOING
 
 Implement formulas for outstanding balance/balance due.
 In particular, for a case of fixed installments, given three among:
