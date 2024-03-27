@@ -1,5 +1,5 @@
 # Using gitignore lists from https://github.com/github/gitignore
-# For Python, C++ and Common Lisp
+# For Python, C++, Common Lisp and Java
 
 ########################################################################
 # Python
@@ -88,3 +88,37 @@ src cl/**/*.sx64fsl
 src cl/**/*.sx32fsl
 src cl/**/*.wx64fsl
 src cl/**/*.wx32fsl
+
+########################################################################
+# Java
+
+# Compiled class file
+src java/**/*.class
+
+# Log file
+src java/**/*.log
+
+# BlueJ files
+src java/**/*.ctxt
+
+# Mobile Tools for Java (J2ME)
+src java/**/.mtj.tmp/
+
+# Package Files #
+src java/**/*.jar
+src java/**/*.war
+src java/**/*.nar
+src java/**/*.ear
+src java/**/*.zip
+src java/**/*.tar.gz
+src java/**/*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+src java/**/hs_err_pid*
+src java/**/replay_pid*
+
+# Avoid pesky .idea folders
+src java/**/.idea
+
+########################################################################
+

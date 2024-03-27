@@ -533,7 +533,7 @@ thus can be computed back the tree whatever they payoff is at the leaves).
 
 (Idea was based on Joshi's book, page 86.)
 
-## ISSUE #0039ja OPEN
+## ISSUE #0039ja COMPLETE
 
 Start project also in Java
 
