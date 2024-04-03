@@ -570,7 +570,8 @@ $P = a*u*(u^n - 1)/(u - 1)$
 
 This last formula helps use to easily compute P, n or a from the others.
 On the other hand, to compute u from P, n and a, we likely will need to
-implement something  like the Newton method.
+implement something like the Newton method (or better, import external
+libraries for it).
 
 We can potentially write the formulas better, for example in a PDF, to
 help the user to the program.
@@ -586,5 +587,25 @@ Progress of ISSUE #0040 in Java.
 
 ## ISSUE #0040py OPEN
 
-Progress of ISSUE #0040 in Python. 
+Progress of ISSUE #0040 in Python.
+
+## ISSUE #0041py OPEN
+
+Implement ISSUE #0040py using the Formula class formalism. More precisely:
+use instances of Formulas to write the formulas used to derive the fourth
+variable from the other three. (At least for the ones which have closed
+formulas).
+
+## ISSUE #0042 OPEN
+
+Regarding ISSUE #0040: add possibility of down payment
+
+## ISSUE #0043 OPEN
+
+Regarding ISSUE #0040: add another feature in which, for an instance of
+a fixed-payment borrowing, provides the outstanding balance at any moment,
+and given an outstanding balance, provides the time that balance is the
+amount owed.
+
+
 
