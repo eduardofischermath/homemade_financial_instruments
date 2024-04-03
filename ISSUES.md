@@ -26,10 +26,10 @@ are the "official releases".
 
 Define and improve on project structure on all languages.
 
-Currently there are Python, C++ and Common Lisp concurrent code versions,
-some more advanced than others, each on their own folders. In the future
-there could be ways to install the source code, or to make the different
-languages interact.
+Currently there are Python, C++, Java and Common Lisp concurrent code
+versions, some more advanced than others (in special Python), each on their
+own folders. In the future there could be ways to install the source code,
+or to make the different languages interact.
 
 In Python the code is object-oriented, with abstract (or pseudo-abstract)
 classes for Assets, Worlds and Unifications, plus subclasses, always
@@ -537,12 +537,54 @@ thus can be computed back the tree whatever they payoff is at the leaves).
 
 Start project also in Java
 
-## ISSUE #0040ja ONGOING
+## ISSUE #0040 ONGOING
 
 Implement formulas for outstanding balance/balance due.
 In particular, for a case of fixed installments, given three among:
 outstanding balance, the interest rate (say per month), the number of time
 units (say months) and the installment, compute the fourth.
 
+The key formula will be described below. Let P0 be the borrowed principal,
+and let P(i) the balance at time i (exaclty after the i-th payment).
+Then P(0) = P0. Also, let n be the number of time units for the installments;
+then P(n) = 0. The interest rate could be given in multiple ways, but
+to ease the formulas we will write as u > 1, meaning u = e^r, for r the
+continuously compounded interest rate, or u = 1+s, if s is the interest
+rate for the timeunit. Let also a be the value of a single installment.
 
+Observing the effect of a single timeunit, we can write:
+
+$P(i) = P(i-1)*u - a$
+
+Knowing P(0) and P(n), P(i) can be determined as
+
+$P(n-i) = a*(u + u^2 + ... + u^i)$
+
+In particular,
+
+$P = a*(u + u^2 + ... + u^n)$
+
+Or alternatively, since u > 1,
+
+$P = a*u*(u^n - 1)/(u - 1)$
+
+This last formula helps use to easily compute P, n or a from the others.
+On the other hand, to compute u from P, n and a, we likely will need to
+implement something  like the Newton method.
+
+We can potentially write the formulas better, for example in a PDF, to
+help the user to the program.
+
+Suggestion of design: use two classes, one outside, which is responsible
+for handling requests, and one inside, which is an instance of a
+fixed-installment borrowing, with the four numbers above specified and
+fixed throughout the existence of the instance.
+
+## ISSUE #0040ja ONGOING
+
+Progress of ISSUE #0040 in Java. 
+
+## ISSUE #0040py OPEN
+
+Progress of ISSUE #0040 in Python. 
 
