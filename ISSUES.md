@@ -585,7 +585,7 @@ fixed throughout the existence of the instance.
 
 Progress of ISSUE #0040 in Java. 
 
-## ISSUE #0040py OPEN
+## ISSUE #0040py ONGOING
 
 Progress of ISSUE #0040 in Python.
 
