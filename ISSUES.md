@@ -607,5 +607,44 @@ a fixed-payment borrowing, provides the outstanding balance at any moment,
 and given an outstanding balance, provides the time that balance is the
 amount owed.
 
+## ISSUE #0044 OPEN
+
+In addition to ISSUE #0040, add all characteristics available on the HP
+12-C financial calculator. That is, functions which relate PV (present
+value), FV (future value), n (number of payments, or number of coupons
+in some contexts), i/d/y (the discount rate, or interest rate of the
+value) and PMT (the value of each payment, or coupon, depending on the
+context).
+
+Also adopt the conventions for negative and positive numbers; for example,
+that incoming money is positive while outgoing is negative, as is the
+convention on the HP 12-C.
+
+## ISSUE #0045 OPEN
+
+Adopt the functions for cash flows as can be done on the HP 12-C (i. e.
+the functions corresponding to the buttons CF0, CFij, Nj, NPV, i and IRR
+in the calculator).
+
+## ISSUE #0046 OPEN
+
+Since it is usual that some Brazilian instruments pay a percentage of a
+certain index (for example, something with a remuneration of a percentage
+of the CDI), implement that computation correctly to match the behavior of
+the Brazil Central Bank's "Calculadora do cidadão".
+
+## ISSUE #0047 OPEN
+
+Implement the concept of Macauley duration and of modified duration for
+investments.
+
+Also use the idea to implement the idea that the modified duration corresponds
+to the negative of the derivative of the present price of the instrument
+with regard to the interest rate. Perhaps use the idea to linearly estimate
+(and maybe verify with other formulas) the price given the variation
+in interest rates.
+
+
+
 
 
