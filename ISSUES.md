@@ -633,6 +633,16 @@ certain index (for example, something with a remuneration of a percentage
 of the CDI), implement that computation correctly to match the behavior of
 the Brazil Central Bank's "Calculadora do cidadão".
 
+According to "Calculadora do cidadão", the rule is that the percentage would
+always affect the exponent, and not the resulting interest rate. For example,
+for dates January 2, 2020 and January 2, 2024, 100% of the CDI results in a
+correction factor of 1.36324865 (i. e., interest rate of 36.324865%) while
+50% of the CDI results in a correction factor of 1.16760108 (i. e., interest
+rate of 16.760108%), and the relationship between these numbers is between
+the correction factors, which are close to the square of each other (due to
+daily compounding and rounding errors, I can only assume), while their
+interest rates are not obviously related.
+
 ## ISSUE #0047 OPEN
 
 Implement the concept of Macauley duration and of modified duration for
@@ -644,7 +654,8 @@ with regard to the interest rate. Perhaps use the idea to linearly estimate
 (and maybe verify with other formulas) the price given the variation
 in interest rates.
 
+## ISSUE #0048 OPEN
 
-
-
+Since most of Brazilian-based finance is based on an year of 252 business days,
+build utility to compute number of business days between any two dates.
 
