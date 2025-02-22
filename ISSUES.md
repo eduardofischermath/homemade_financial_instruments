@@ -131,7 +131,7 @@ Write code for pricing put American options in Exercise 6 of Chapter 3 of
 Mark Joshi's book "The Concepts and Practice of Mathematical Finance"
 using the FrozenBinaryTree methods (yet to be coded).
 
-## ISSUE #0011py OPEN
+## ISSUE #0011py ONGOING
 
 Work on uniformizations (for example, interest rate and dividend rate, and
 also dates), as well as transformations between different frequencies and amounts
