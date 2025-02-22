@@ -642,6 +642,9 @@ certain index (for example, something with a remuneration of a percentage
 of the CDI), implement that computation correctly to match the behavior of
 the Brazil Central Bank's "Calculadora do cidadão".
 
+This in particular would be very useful for a more user-front-facing demo or
+application.
+
 According to "Calculadora do cidadão", the rule is that the percentage would
 always affect the exponent, and not the resulting interest rate. For example,
 for dates January 2, 2020 and January 2, 2024, 100% of the CDI results in a
@@ -668,3 +671,9 @@ in interest rates.
 Since most of Brazilian-based finance is based on an year of 252 business days,
 build utility to compute number of business days between any two dates.
 
+## ISSUE #0049py OPEN
+
+One utility for percentages can be: given an object from the user, if it is a
+string ending in a "%" char, make it a percentage (Python does not do that
+natively). Otherwise treat it approprietly. Such function can be called
+something like "readNumberOrPercentage".
