@@ -133,10 +133,19 @@ using the FrozenBinaryTree methods (yet to be coded).
 
 ## ISSUE #0011py OPEN
 
-Work on uniformizations (for example, interest rate and dividend rate).
-Also, add function outside classes for transformation into and out of
-percentage (probably better outside classes than a method of a class
-designed specifically for that).
+Work on uniformizations (for example, interest rate and dividend rate, and
+also dates), as well as transformations between different frequencies and amounts
+(years to days and annual rates to daily rates).
+
+Add percentage functionality for rates and other numbers.
+
+This can be done by having having a class called Rate and at least three attributes:
+one numeric for the rate itself, one for whether it prefers to be called as a
+percentage, and other for the frequency (per year, per month, per day, et cetera),
+which can also be "unspecified"/"unknown"/None if the user doesn't want the depth.
+
+Time can also have many attributes one for the number, and other for the unit. It can
+also comport an optional start time and an optional end time.
 
 ## ISSUE #0012 COMPLETE
 
