@@ -98,13 +98,15 @@ class TimeUnitsContext():
 		For example, if a year has 12 months, a monthly equivalent rate of an
 		annual rate is represented as a number which is 1/12 of the latter.
 		"""
-		newDict = {}
-		for key, valueDict in dict_.items():
+		dictWithInverses = {}
+		for firstKey, valueDict in dict_.items():
+			inverseFirstKey = self.inverseTransformDict[firstKey]
 			for secondKey, ratio in valueDict.items():
-				if secondKey not in newDict.keys():
-					newDict[secondKey] = {}
-				newDict[secondKey][firstKey] = 1.0 / ratio
-		return newDict
+				inverseSecondKey = self.inverseTransformDict[secondKey]
+				if inverseSecondKey not in dictWithInverses.keys():
+					newDict[inverseSecondKey] = {}
+				dictWithInverses[inverseSecondKey][inverseFirstKey] = ratio
+		return dictWithInverses
 
 	def completePartialDict(self, dict_: dict) -> dict:
 		"""
@@ -121,15 +123,33 @@ class TimeUnitsContext():
 			for secondKey, ratio in valueDict.items():
 				if secondKey not in newDict.keys():
 					newDict[secondKey] = {}
-				newDict[secondKey][firstKey] = 1.0 / ratio
+				newDict[secondKey][firstKey] = 1 / ratio
 		for key in newDict.keys():
 			newDick[key][key] = 1
 		return newDict
 
 	def directTransform(self, num: float, unitFrom: str, unitTo: str) -> float:
-		raise NotImplementedError()
+		"""
+		Converts a number from one [direct] time unit to another.
 		
-	def inverseTransform(self, num: float, unitFrom: str, unitTo: str) -> float:
-		raise NotImplementedError()
+		For example, converts 2 years into 24 months.
+		"""
+		ratio = self.directTransformDict[unitFrom][unitTo]
+		return num * ratio
 		
+	def inverseTransform(self, num: float, unitFrom: str, unitTo: str, compositeNotSimple: bool) -> float:
+		"""
+		Converts a number from one [inverse] time unit to another.
+		
+		Option compositeNotSimple decides if it will convert as composite or
+		simple interest.
+		
+		For example, 0.01 monthly is equivalent to 0.12 yearly via simple
+		interest, and to (1.01)*12 - 1 via composite interest. 
+		"""
+		ratio = self.inverseTransformDict[unitFrom][unitTo]
+		if compositeNotSimple:
+			return (1 + num)**ratio - 1
+		else:
+			return num * ratio
 		
