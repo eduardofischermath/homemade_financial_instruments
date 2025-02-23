@@ -677,3 +677,8 @@ One utility for percentages can be: given an object from the user, if it is a
 string ending in a "%" char, make it a percentage (Python does not do that
 natively). Otherwise treat it approprietly. Such function can be called
 something like "readNumberOrPercentage".
+
+## ISSUE #0048 OPEN
+
+Code structure to compute IRRBB as determined by BCB Circular number 3876,
+or at least NII and EVE (i. e. without the shocks).
